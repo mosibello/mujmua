@@ -415,5 +415,20 @@
       }
     }
   }
+  &__auth-card {
+    padding: 2rem 1.5rem;
+    background-color: var(--t-cp-base-white);
+    box-shadow: var(--t-box-shadow-lg);
+    border-radius: var(--t-global-card-border-radius);
+    border: 1px solid var(--t-border-color);
+    @media (min-width: 768px) {
+      padding: 3rem;
+    }
+    .c__form {
+      .c__button {
+        width: 100%;
+      }
+    }
+  }
   // New component styles here
 }

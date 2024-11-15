@@ -12,8 +12,8 @@ const Form = ({
   onSubmit,
   payloadPosting,
   formMessage,
+  buttonTitle = "Get Started",
 }) => {
-  console.log(formFields);
   return (
     <div className="c__form">
       {formFields && formFields.constructor === Array ? (
@@ -87,7 +87,7 @@ const Form = ({
           <div className="c__form__button-wrapper">
             <Button
               actionable
-              title="Get Started"
+              title={buttonTitle}
               type="submit"
               isLoading={payloadPosting}
               // isDisabled={!isValid}

@@ -2,6 +2,7 @@ import "./globals.css";
 import "@/styles/index.scss";
 import Layout from "@/components/wrappers/Layout";
 import localFont from "next/font/local";
+import { GET__getUser } from "@/lib/data-service";
 
 export const pacaembu = localFont({
   src: "../public/fonts/Pacaembu.woff2",
@@ -15,7 +16,9 @@ export const metadata = {
     "Free stock photos & videos you can use everywhere. Browse millions of high-quality royalty free stock images & copyright free pictures. No attribution required.",
 };
 
-export default function RootLayout({ children }) {
+export default async function RootLayout({ children }) {
+  const user = await GET__getUser();
+  console.log(user);
   return (
     <html lang="en">
       <body className={`${pacaembu.variable}`}>
