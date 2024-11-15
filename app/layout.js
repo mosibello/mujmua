@@ -3,6 +3,7 @@ import "@/styles/index.scss";
 import Layout from "@/components/wrappers/Layout";
 import localFont from "next/font/local";
 import { GET__getUser } from "@/lib/data-service";
+import { AppWrapper } from "@/context/AppWrapper";
 
 export const pacaembu = localFont({
   src: "../public/fonts/Pacaembu.woff2",
@@ -18,11 +19,12 @@ export const metadata = {
 
 export default async function RootLayout({ children }) {
   const user = await GET__getUser();
-  console.log(user);
   return (
     <html lang="en">
       <body className={`${pacaembu.variable}`}>
-        <Layout>{children}</Layout>
+        <AppWrapper user={user}>
+          <Layout>{children}</Layout>
+        </AppWrapper>
       </body>
     </html>
   );
