@@ -1,16 +1,19 @@
 import Bounded from "@/components/wrappers/Bounded";
 import Container from "@/components/wrappers/Container";
+import React from "react";
 
-export default function Home() {
+const Signup = () => {
   return (
     <>
       <Container>
-        <Bounded className="b__size-md">
+        <Bounded className="b__size-lg">
           <div className="text-center">
-            <h1>Homepage</h1>
+            <h1 className="u__h1">Sign up</h1>
           </div>
         </Bounded>
       </Container>
     </>
   );
-}
+};
+
+export default Signup;
