@@ -2,53 +2,37 @@ import { createServerClient } from "@supabase/ssr";
 import { NextResponse } from "next/server";
 
 export async function updateSession(request) {
-  let response = NextResponse.next({
+  const response = NextResponse.next({
     request: {
       headers: request.headers,
     },
   });
+
+  const cookies = request.cookies;
 
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
     {
       cookies: {
-        get(name) {
-          return request.cookies.get(name)?.value;
+        async get(name) {
+          return (await cookies.get(name))?.value;
         },
-        set(name, value, options) {
-          request.cookies.set({
+        async set(name, value, options) {
+          cookies.set({
             name,
             value,
             ...options,
           });
-          response = NextResponse.next({
-            request: {
-              headers: request.headers,
-            },
-          });
-          response.cookies.set({
-            name,
-            value,
-            ...options,
-          });
+          response.cookies.set(name, value, options);
         },
-        remove(name, options) {
-          request.cookies.set({
+        async remove(name, options) {
+          cookies.set({
             name,
             value: "",
             ...options,
           });
-          response = NextResponse.next({
-            request: {
-              headers: request.headers,
-            },
-          });
-          response.cookies.set({
-            name,
-            value: "",
-            ...options,
-          });
+          response.cookies.set(name, "", options);
         },
       },
     }

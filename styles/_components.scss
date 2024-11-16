@@ -430,5 +430,34 @@
       }
     }
   }
+  &__user-avatar {
+    cursor: pointer;
+    &__wrapper {
+      width: 40px;
+      height: 40px;
+      border-radius: 100%;
+      background-color: var(--t-primary-branding-color);
+      color: var(--t-cp-base-white);
+      position: relative;
+    }
+    &__text {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-weight: 700;
+      font-size: 1.25rem;
+    }
+  }
+  &__lib {
+    &__dropdown-menu {
+      z-index: 999999;
+      background-color: var(--t-cp-base-white);
+      border-radius: 12px;
+      // padding: 1rem;
+      // box-shadow: var(--t-box-shadow-md);
+      // border: 1px solid var(--t-border-color);
+    }
+  }
   // New component styles here
 }

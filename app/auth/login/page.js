@@ -36,7 +36,6 @@ const Login = () => {
         type: `success`,
         message: `Please continue logging in by clicking on the magic link we sent you on your email address.`,
       });
-      console.log(data);
     } catch (err) {
       console.log(err);
       setPayloadPosting(false);

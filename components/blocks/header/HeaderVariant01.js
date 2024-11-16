@@ -5,6 +5,8 @@ import { usePathname } from "next/navigation";
 import Button from "@/components/ui/Button";
 import { organization } from "@/lib/constants";
 import Container from "@/components/wrappers/Container";
+import { useAppContext } from "@/context/AppWrapper";
+import UserAvatar from "@/components/ui/UserAvatar";
 
 const updateActiveStatusByKey = (data, uid) => {
   let itemFoundAtLevel = false;
@@ -137,6 +139,8 @@ const HeaderVariant01 = ({ navigationSchema }) => {
 
   const pathname = usePathname();
 
+  const { user } = useAppContext();
+
   const handleResize = () => {
     if (window.innerWidth >= 992) {
       setNavigationState(navigationSchema?.items);
@@ -210,14 +214,23 @@ const HeaderVariant01 = ({ navigationSchema }) => {
                     );
                   })}
                 </ul>
-                <div className="pr-[1rem]">
-                  <Button title={`Log In`} destination={`/auth/login`} />
-                </div>
-                <Button
-                  theme={`secondary`}
-                  title={`Sign Up`}
-                  destination={`/auth/sign-up`}
-                />
+                {user.data.user && (
+                  <>
+                    <UserAvatar user={user.data.user} />
+                  </>
+                )}
+                {!user.data.user && (
+                  <>
+                    <div className="pr-[1rem]">
+                      <Button title={`Log In`} destination={`/auth/login`} />
+                    </div>
+                    <Button
+                      theme={`secondary`}
+                      title={`Sign Up`}
+                      destination={`/auth/sign-up`}
+                    />
+                  </>
+                )}
               </nav>
             </div>
             <div className="b__header__header01__hamburger-wrapper">
