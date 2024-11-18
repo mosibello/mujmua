@@ -18,23 +18,6 @@ import { POST__signOut } from "@/lib/actions";
 const UserAvatar = ({ user }) => {
   return (
     <>
-      {/* <DropdownMenu>
-        <DropdownMenuTrigger>
-          <div className="c__user-avatar">
-            <div className="c__user-avatar__wrapper">
-              <div className="c__user-avatar__text">M</div>
-            </div>
-          </div>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent>
-          <DropdownMenuLabel>My Account</DropdownMenuLabel>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem>Profile</DropdownMenuItem>
-          <DropdownMenuItem>Billing</DropdownMenuItem>
-          <DropdownMenuItem>Team</DropdownMenuItem>
-          <DropdownMenuItem>Subscription</DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu> */}
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <div className="c__user-avatar">

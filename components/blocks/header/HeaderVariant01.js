@@ -214,12 +214,12 @@ const HeaderVariant01 = ({ navigationSchema }) => {
                     );
                   })}
                 </ul>
-                {user.data.user && (
+                {user?.data.user && (
                   <>
                     <UserAvatar user={user.data.user} />
                   </>
                 )}
-                {!user.data.user && (
+                {!user?.data.user && (
                   <>
                     <div className="pr-[1rem]">
                       <Button title={`Log In`} destination={`/auth/login`} />

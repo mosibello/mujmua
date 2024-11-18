@@ -1,19 +1,85 @@
+"use client";
+import React, { useState } from "react";
+import AuthCard from "@/components/ui/AuthCard";
+import Form from "@/components/ui/Form";
 import Bounded from "@/components/wrappers/Bounded";
 import Container from "@/components/wrappers/Container";
-import React from "react";
+import { SCHEMA__SignupForm } from "@/lib/schema";
+import { useForm } from "react-hook-form";
+import { createClient } from "@/supabase/client";
 
-const Signup = () => {
+const Login = () => {
+  const {
+    register,
+    handleSubmit,
+    control,
+    reset,
+    formState: { errors },
+    formState: { isValid },
+  } = useForm({
+    mode: "all",
+  });
+
+  const [formMessage, setFormMessage] = useState(null);
+  const [payloadPosting, setPayloadPosting] = useState(false);
+
+  const supabase = createClient();
+
+  const onSubmit = async (formData) => {
+    setPayloadPosting(true);
+    setFormMessage(null);
+    formData.username_handle = formData.username_handle.toLowerCase();
+    try {
+      const { data, error } = await supabase.auth.signInWithOtp({
+        email: formData.email,
+        options: {
+          data: formData,
+          emailRedirectTo:
+            "http://localhost:3000/auth/login?email_verified=true",
+        },
+      });
+      if (error) {
+        throw new Error(`Authentication failed: ${error.message}`);
+      }
+      setPayloadPosting(false);
+      reset();
+      setFormMessage({
+        type: `success`,
+        message: `Please verify your email address by clicking on the link we sent you on your email address.`,
+      });
+    } catch (error) {
+      console.log(error);
+      setPayloadPosting(false);
+      setFormMessage({
+        type: `error`,
+        message: error.message,
+      });
+    }
+  };
+
   return (
     <>
-      <Container>
-        <Bounded className="b__size-lg">
-          <div className="text-center">
-            <h1 className="u__h1">Sign up</h1>
+      <Bounded className="b__auth__variant01 b__size-lg u__background-light">
+        <Container>
+          <div className="max-w-[500px] mx-auto">
+            <AuthCard heading={`Create your account`}>
+              <Form
+                isValid={isValid}
+                formFields={SCHEMA__SignupForm}
+                register={register}
+                errors={errors}
+                control={control}
+                buttonTitle={`Continue`}
+                onSubmit={handleSubmit(onSubmit)}
+                payloadPosting={payloadPosting}
+                formMessage={formMessage}
+              />
+            </AuthCard>
           </div>
-        </Bounded>
-      </Container>
+        </Container>
+      </Bounded>
     </>
   );
 };
 
-export default Signup;
+export default Login;

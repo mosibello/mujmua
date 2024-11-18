@@ -382,7 +382,7 @@
   &__auth {
     &__variant01 {
       @media (min-width: 992px) {
-        height: calc(100vh - 127px);
+        min-height: calc(100vh - 127px);
         display: flex;
         flex-direction: column;
         justify-content: center;
