@@ -9,6 +9,15 @@
     &-lg {
       padding: 6rem 0;
     }
+    &-fit-to-screen {
+      @media (min-width: 992px) {
+        min-height: calc(100vh - 127px);
+        // display: flex;
+        // flex-direction: column;
+        // justify-content: center;
+        // align-items: center;
+      }
+    }
   }
   &__header {
     &__header01 {
