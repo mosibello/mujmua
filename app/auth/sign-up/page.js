@@ -34,8 +34,6 @@ const Login = () => {
         email: formData.email,
         options: {
           data: formData,
-          emailRedirectTo:
-            "http://localhost:3000/auth/login?email_verified=true",
         },
       });
       if (error) {

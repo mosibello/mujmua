@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { GET__getProfileByHandle } from "@/lib/data-service";
 import Container from "@/components/wrappers/Container";
 import Bounded from "@/components/wrappers/Bounded";
+import Heading from "@/components/ui/Heading";
 
 export default async function ProfilePage({ params }) {
   params = await params;
@@ -17,9 +18,13 @@ export default async function ProfilePage({ params }) {
     return notFound();
   }
   return (
-    <Bounded className="b__size-md">
+    <Bounded className="b__size-md b__size-fit-to-screen">
       <Container>
-        Hello {data?.profile?.first_name} {data?.profile?.last_name}
+        <div className="mx-auto text-center max-w-[700px]">
+          <Heading className="u__h3">
+            Hello {data?.profile?.first_name} {data?.profile?.last_name}
+          </Heading>
+        </div>
       </Container>
     </Bounded>
   );
