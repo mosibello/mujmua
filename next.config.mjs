@@ -6,7 +6,11 @@ const nextConfig = {
     ignoreDuringBuilds: true,
   },
   images: {
-    domains: ["23219927.fs1.hubspotusercontent-na1.net", "ik.imagekit.io"],
+    domains: [
+      "23219927.fs1.hubspotusercontent-na1.net",
+      "ik.imagekit.io",
+      "hencvadqoefxvinlzdgs.supabase.co",
+    ],
   },
 };
 

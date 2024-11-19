@@ -459,6 +459,18 @@
     height: 100%;
     background-color: rgba(0, 0, 0, 0.7);
   }
+  &__util-button {
+    padding: 0.25rem 0.5rem;
+    background-color: var(--t-cp-base-white);
+    border: 1px solid var(--t-border-color);
+    box-shadow: var(--t-box-shadow-md);
+    border-radius: var(--t-button-border-radius);
+    transition: 0.2s ease;
+    &:hover {
+      background-color: #f8f8f8;
+      transition: 0.2s ease;
+    }
+  }
   &__lib {
     &__dropdown-menu {
       z-index: 999999;

@@ -4,6 +4,7 @@ import Layout from "@/components/wrappers/Layout";
 import localFont from "next/font/local";
 import { GET__getUser } from "@/lib/data-service";
 import { AppWrapper } from "@/context/AppWrapper";
+import { Toaster } from "@/components/ui/shadcn/sonner";
 
 export const pacaembu = localFont({
   src: "../public/fonts/Pacaembu.woff2",
@@ -25,6 +26,7 @@ export default async function RootLayout({ children }) {
         <AppWrapper user={user}>
           <Layout>{children}</Layout>
         </AppWrapper>
+        <Toaster position="top-center" />
       </body>
     </html>
   );
