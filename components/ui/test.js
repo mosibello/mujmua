@@ -1,9 +1,76 @@
-"use client";
-import React from "react";
-import parse from "html-react-parser";
-import Button from "./Button";
-import { baseUrl } from "@/lib/constants";
+// Parent component
+const parentComp = () => {
+  const handlePostPhotos = async (e) => {};
+  return (
+    <>
+      {readyToTagfiles && uploadedFiles.length && (
+        <>
+          {uploadedFiles.map((elem, index) => {
+            return (
+              <FileEditorCard className={`mb-[2rem]`} file={elem} key={index} />
+            );
+          })}
+          <StickyBottomDrawer>
+            <div className="text-center">
+              <Button
+                title="Submit Your Content"
+                actionable
+                isLoading={payloadPosting}
+                onClick={() => handlePostPhotos()}
+                theme={`primary`}
+              />
+            </div>
+          </StickyBottomDrawer>
+        </>
+      )}
+    </>
+  );
+};
 
+// Child Component
+const FileEditorCard = () => {
+  const onSubmit = async (formData) => {
+    setPayloadPosting(true);
+    setFormMessage(null);
+    try {
+      // SUPA BASE LOGIC HERE
+      if (error) {
+        throw new Error(`Error: ${error.message}`);
+      }
+      setPayloadPosting(false);
+      reset();
+      setFormMessage({
+        type: `success`,
+        message: `Please verify your email address by clicking on the link we sent you on your email address.`,
+      });
+    } catch (error) {
+      console.log(error);
+      setPayloadPosting(false);
+      setFormMessage({
+        type: `error`,
+        message: error.message,
+      });
+    }
+  };
+  return (
+    <div className="c__file-editor-card__form-wrapper">
+      <Form
+        isValid={isValid}
+        formFields={SCHEMA__ImageEditorForm}
+        register={register}
+        errors={errors}
+        control={control}
+        buttonTitle={null}
+        onSubmit={handleSubmit(onSubmit)}
+        payloadPosting={payloadPosting}
+        formMessage={formMessage}
+        disableSubmissionOnEnter={true}
+      />
+    </div>
+  );
+};
+
+// Form component
 const Form = ({
   formFields,
   register,

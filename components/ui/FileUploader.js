@@ -1,10 +1,12 @@
 "use client";
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback, useEffect, useRef } from "react";
 import Image from "next/image";
 import { Upload, X } from "lucide-react";
 import { useDropzone } from "react-dropzone";
 import { cn } from "@/lib/utils";
 import Button from "./Button";
+import StickyBottomDrawer from "./StickyBottomDrawer";
+import FileEditorCard from "./FileEditorCard";
 import { ScrollArea } from "@/components/ui/shadcn/scroll-area";
 import { toast } from "sonner";
 import { formatBytes, getRandomNumber } from "../../lib/helpers";
@@ -12,9 +14,12 @@ import { Progress } from "@/components/ui/shadcn/progress";
 import { useForm } from "react-hook-form";
 import { useAppContext } from "@/context/AppWrapper";
 import { v4 as uuidv4 } from "uuid";
-import { POST__uploadFile } from "../../lib/actions";
+import { POST__uploadFile, POST__insertPhotos } from "../../lib/actions";
 import slugify from "slugify";
 import { supabaseStorageBucketURL } from "@/lib/constants";
+import Container from "@/components/wrappers/Container";
+import Heading from "@/components/ui/Heading";
+import Paragraph from "@/components/ui/Paragraph";
 
 const FileUploader = ({
   onValueChange,
@@ -23,7 +28,7 @@ const FileUploader = ({
     "image/*": [],
   },
   maxSize = 1024 * 1024 * 2,
-  maxFileCount = 4,
+  maxFileCount = 5,
   multiple = false,
   disabled = false,
 }) => {
@@ -45,11 +50,18 @@ const FileUploader = ({
   const [progresses, setProgresses] = useState({});
   const [uploadingIntent, setUploadingIntent] = useState(0);
   const [readyToTagfiles, setReadyToTagfiles] = useState(false);
+  const [pageContent, setPageContent] = useState({
+    heading: `Share your photos and videos, and let the world love them.`,
+    description: null,
+  });
+  const [readyToRedirectOnSuccess, setReadyToRedirectOnSuccess] =
+    useState(false);
 
   const { user } = useAppContext();
   const userId = user?.data?.user?.id;
+  const userMetaData = user.data.user.user_metadata;
 
-  const onSubmit = async (e) => {
+  const handleUploads = async (e) => {
     e.preventDefault();
     if (!files?.length) return;
 
@@ -76,7 +88,7 @@ const FileUploader = ({
             try {
               setProgresses((prevState) => ({
                 ...prevState,
-                [file.name]: getRandomNumber(10, 45),
+                [file.name]: getRandomNumber(5, 20),
               }));
 
               const { data, error } = await POST__uploadFile(
@@ -128,6 +140,10 @@ const FileUploader = ({
         setTimeout(() => {
           setReadyToTagfiles(true);
           setPayloadPosting(false);
+          setPageContent({
+            heading: `Make your photos and videos easy to find and be seen.`,
+            description: `Add some keywords that describe your photo and what is in it.`,
+          });
         }, 500);
         return `${files.length} image(s) uploaded successfully!`;
       },
@@ -162,7 +178,9 @@ const FileUploader = ({
 
       if (rejectedFiles.length > 0) {
         rejectedFiles.forEach(({ file }) => {
-          toast.error(`File ${file.name} was rejected`);
+          toast.error(
+            `File ${file.name} was rejected. Please upload a JPEG or PNG (up to 4MB each)`
+          );
         });
       }
     },
@@ -180,6 +198,36 @@ const FileUploader = ({
     return "preview" in file && typeof file.preview === "string";
   }
 
+  const formRefs = useRef([]);
+
+  const handlePostPhotos = async () => {
+    setPayloadPosting(true);
+    const allFormData = formRefs.current.map((ref) =>
+      ref?.getFormDataWithCustomValues?.()
+    );
+    console.log("Collected Form Data:", allFormData);
+    try {
+      const { data, error } = await POST__insertPhotos(allFormData);
+      if (error) {
+        throw new Error(`Error: ${error.message}`);
+      }
+      setPayloadPosting(false);
+      setReadyToRedirectOnSuccess(true);
+      toast.success(`${allFormData.length} photo(s) have been published! 🎉`, {
+        duration: 5000,
+      });
+      if (typeof window !== "undefined") {
+        setTimeout(() => {
+          window.location.href = `/@${userMetaData.username_handle}`;
+        }, 2000);
+      }
+    } catch (error) {
+      console.log(error);
+      setPayloadPosting(false);
+      toast.error(error.message);
+    }
+  };
+
   useEffect(() => {
     return () => {
       if (!files) return;
@@ -191,9 +239,9 @@ const FileUploader = ({
     };
   }, [files]);
 
-  useEffect(() => {
-    console.log(uploadedFiles);
-  }, [readyToTagfiles]);
+  // useEffect(() => {
+  //   console.log(uploadedFiles);
+  // }, [readyToTagfiles]);
 
   const isDisabled = disabled || (files?.length ?? 0) >= maxFileCount;
 
@@ -201,149 +249,165 @@ const FileUploader = ({
     accept: {
       "image/*": [],
     },
-    // maxSize: 1024 * 1000,
+    maxSize,
     onDrop,
   });
 
   return (
     <>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {readyToTagfiles &&
-          uploadedFiles.length &&
-          uploadedFiles.map((elem, index) => {
-            return (
-              <div
-                key={index}
-                className="flex flex-col bg-white rounded-[8px] overflow-hidden"
-              >
-                <div className="relative h-[400px] w-full">
-                  <Image
-                    src={elem.src}
-                    alt={elem.name}
-                    layout="fill"
-                    objectFit="cover"
-                    className="rounded-t-lg"
-                    loading={`lazy`}
-                  />
-                </div>
+      <Container>
+        <div className="mx-auto text-center max-w-[700px]">
+          {pageContent?.heading && (
+            <Heading className="u__h3 mb-5">{pageContent?.heading}</Heading>
+          )}
+          {pageContent?.description && (
+            <Paragraph className="u__h6">{pageContent?.description}</Paragraph>
+          )}
+        </div>
+      </Container>
+      <Container className="mt-[2.5rem]">
+        {readyToTagfiles && uploadedFiles.length && (
+          <>
+            {uploadedFiles.map((elem, index) => {
+              return (
+                <FileEditorCard
+                  ref={(el) => (formRefs.current[index] = el)} // Attach refs dynamically
+                  className={`mb-[2rem]`}
+                  file={elem}
+                  key={index}
+                  authorId={userId}
+                />
+              );
+            })}
+            <StickyBottomDrawer>
+              <div className="text-center">
+                <Button
+                  title="Submit Your Content"
+                  actionable
+                  isLoading={payloadPosting}
+                  onClick={() => handlePostPhotos()}
+                  theme={`primary`}
+                  isDisabled={readyToRedirectOnSuccess}
+                />
               </div>
-            );
-          })}
-      </div>
-      {!readyToTagfiles && (
-        <form onSubmit={onSubmit} autoComplete="off">
-          <div className="max-w-[800px] mx-auto">
-            <div className="relative flex flex-col gap-6 overflow-hidden px-4">
-              <div
-                {...getRootProps()}
-                className={cn(
-                  "group relative grid h-52 w-full cursor-pointer place-items-center rounded-lg border-2 border-dashed border-muted-foreground/25 px-5 py-2.5 text-center transition hover:bg-muted/25",
-                  "ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
-                  isDragActive && "border-muted-foreground/50",
-                  isDisabled && "pointer-events-none opacity-60"
-                )}
-              >
-                <input {...getInputProps()} />
-                {isDragActive ? (
-                  <div className="flex flex-col items-center justify-center gap-4 sm:px-5">
-                    <div className="rounded-full border border-dashed p-3">
-                      <Upload
-                        className="size-7 text-muted-foreground"
-                        aria-hidden="true"
-                      />
-                    </div>
-                    <p className="font-medium text-muted-foreground">
-                      Drop the files here
-                    </p>
-                  </div>
-                ) : (
-                  <div className="flex flex-col items-center justify-center gap-4 sm:px-5">
-                    <div className="rounded-full border border-dashed p-3">
-                      <Upload
-                        className="size-7 text-muted-foreground"
-                        aria-hidden="true"
-                      />
-                    </div>
-                    <div className="flex flex-col gap-px">
+            </StickyBottomDrawer>
+          </>
+        )}
+
+        {!readyToTagfiles && (
+          <form onSubmit={handleUploads} autoComplete="off">
+            <div className="max-w-[800px] mx-auto">
+              <div className="relative flex flex-col gap-6 overflow-hidden px-4">
+                <div
+                  {...getRootProps()}
+                  className={cn(
+                    "group relative grid h-52 w-full cursor-pointer place-items-center rounded-lg border-2 border-dashed border-muted-foreground/25 px-5 py-2.5 text-center transition hover:bg-muted/25",
+                    "ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+                    isDragActive && "border-muted-foreground/50",
+                    isDisabled && "pointer-events-none opacity-60"
+                  )}
+                >
+                  <input {...getInputProps()} />
+                  {isDragActive ? (
+                    <div className="flex flex-col items-center justify-center gap-4 sm:px-5">
+                      <div className="rounded-full border border-dashed p-3">
+                        <Upload
+                          className="size-7 text-muted-foreground"
+                          aria-hidden="true"
+                        />
+                      </div>
                       <p className="font-medium text-muted-foreground">
-                        Drag {`'n'`} drop files here, or click to select files
-                      </p>{" "}
-                      <p className="text-sm text-muted-foreground/70">
-                        You can upload 4 files (up to 4MB each)
+                        Drop the files here
                       </p>
                     </div>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {files?.length ? (
-              <div className="mt-10">
-                <ScrollArea className="h-fit w-full px-4">
-                  <div className="c__lib__scroll-area__content-wrapper flex max-h-48 flex-col gap-4">
-                    {files?.map((file, index) => (
-                      <div
-                        key={index}
-                        className="relative flex items-center gap-3.5"
-                      >
-                        <div className="flex flex-1 gap-2.5">
-                          <Image
-                            src={URL.createObjectURL(file)}
-                            alt={file.name}
-                            width={48}
-                            height={48}
-                            loading="lazy"
-                            className="aspect-square shrink-0 rounded-md object-cover"
-                          />
-                          <div className="flex w-full flex-col gap-2">
-                            <div className="flex flex-col gap-px">
-                              <p className="line-clamp-1 text-sm font-medium text-foreground/80">
-                                {file.name}
-                              </p>
-                              <p className="text-xs text-muted-foreground">
-                                {formatBytes(file.size)}
-                              </p>
-                            </div>
-                            {progresses?.[file.name] ? (
-                              <div className="pr-5">
-                                <Progress value={progresses?.[file.name]} />
-                              </div>
-                            ) : null}
-                          </div>
-                          {uploadingIntent < 1 && (
-                            <button
-                              type="button"
-                              className="c__util-button h-[35px]"
-                              onClick={() => onRemove(index)}
-                            >
-                              <X className="size-4" aria-hidden="true" />
-                              <span className="sr-only">Remove file</span>
-                            </button>
-                          )}
-                        </div>
+                  ) : (
+                    <div className="flex flex-col items-center justify-center gap-4 sm:px-5">
+                      <div className="rounded-full border border-dashed p-3">
+                        <Upload
+                          className="size-7 text-muted-foreground"
+                          aria-hidden="true"
+                        />
                       </div>
-                    ))}
-                  </div>
-                </ScrollArea>
-                {files && files.length > 0 && (
-                  <div className="mt-10 text-end">
-                    <Button
-                      actionable
-                      title="Upload"
-                      type="submit"
-                      isLoading={payloadPosting}
-                      theme={`secondary`}
-                      // isDisabled={!isValid}
-                    />
-                  </div>
-                )}
+                      <div className="flex flex-col gap-px">
+                        <p className="font-medium text-muted-foreground">
+                          Drag {`'n'`} drop files here, or click to select files
+                        </p>{" "}
+                        <p className="text-sm text-muted-foreground/70">
+                          You can upload {maxFileCount} files (up to 4MB each)
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
-            ) : null}
-          </div>
-        </form>
-      )}
+
+              {files?.length ? (
+                <div className="mt-10">
+                  <ScrollArea className="h-fit w-full px-4">
+                    <div className="c__lib__scroll-area__content-wrapper flex max-h-48 flex-col gap-4">
+                      {files?.map((file, index) => (
+                        <div
+                          key={index}
+                          className="relative flex items-center gap-3.5"
+                        >
+                          <div className="flex flex-1 gap-2.5">
+                            <Image
+                              src={URL.createObjectURL(file)}
+                              alt={file.name}
+                              width={48}
+                              height={48}
+                              loading="lazy"
+                              className="aspect-square shrink-0 rounded-md object-cover"
+                            />
+                            <div className="flex w-full flex-col gap-2">
+                              <div className="flex flex-col gap-px">
+                                <p className="line-clamp-1 text-sm font-medium text-foreground/80">
+                                  {file.name}
+                                </p>
+                                <p className="text-xs text-muted-foreground">
+                                  {formatBytes(file.size)}
+                                </p>
+                              </div>
+                              {progresses?.[file.name] ? (
+                                <div className="pr-5">
+                                  <Progress value={progresses?.[file.name]} />
+                                </div>
+                              ) : null}
+                            </div>
+                            {uploadingIntent < 1 && (
+                              <button
+                                type="button"
+                                className="c__util-button h-[35px]"
+                                onClick={() => onRemove(index)}
+                              >
+                                <X className="size-4" aria-hidden="true" />
+                                <span className="sr-only">Remove file</span>
+                              </button>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </ScrollArea>
+                  {files && files.length > 0 && (
+                    <div className="mt-10 text-end">
+                      <Button
+                        actionable
+                        title="Upload"
+                        type="submit"
+                        isLoading={payloadPosting}
+                        theme={`secondary`}
+                        // isDisabled={!isValid}
+                      />
+                    </div>
+                  )}
+                </div>
+              ) : null}
+            </div>
+          </form>
+        )}
+      </Container>
     </>
   );
 };
-
 export default FileUploader;
