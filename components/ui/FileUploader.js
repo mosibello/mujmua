@@ -27,7 +27,7 @@ const FileUploader = ({
   accept = {
     "image/*": [],
   },
-  maxSize = 1024 * 1024 * 2,
+  maxSize = 1024 * 1024 * 4,
   maxFileCount = 5,
   multiple = false,
   disabled = false,
