@@ -20,6 +20,7 @@ import { supabaseStorageBucketURL } from "@/lib/constants";
 import Container from "@/components/wrappers/Container";
 import Heading from "@/components/ui/Heading";
 import Paragraph from "@/components/ui/Paragraph";
+import Compressor from "compressorjs";
 
 const FileUploader = ({
   onValueChange,
@@ -61,6 +62,99 @@ const FileUploader = ({
   const userId = user?.data?.user?.id;
   const userMetaData = user.data.user.user_metadata;
 
+  // const handleUploads = async (e) => {
+  //   e.preventDefault();
+  //   if (!files?.length) return;
+
+  //   setPayloadPosting(true);
+  //   setUploadingIntent(uploadingIntent + 1);
+
+  //   const uploadedFileNames = new Set();
+
+  //   console.log(files);
+
+  //   const uploadProcess = async () => {
+  //     try {
+  //       const uploadPromises = files.map((file) => {
+  //         if (uploadedFileNames.has(file.name)) {
+  //           console.log(
+  //             `File ${file.name} is a duplicate and will not be uploaded.`
+  //           );
+  //           return Promise.resolve();
+  //         }
+
+  //         uploadedFileNames.add(file.name);
+
+  //         return new Promise(async (resolve, reject) => {
+  //           try {
+  //             setProgresses((prevState) => ({
+  //               ...prevState,
+  //               [file.name]: getRandomNumber(5, 20),
+  //             }));
+
+  //             const { data, error } = await POST__uploadFile(
+  //               file,
+  //               `images`,
+  //               `${userId}/${slugify(file.name)}-${uuidv4()}`
+  //             );
+
+  //             console.log(`posted data`, data);
+
+  //             setUploadedFiles((prevState) => [
+  //               ...prevState,
+  //               {
+  //                 name: file.name,
+  //                 src: `${supabaseStorageBucketURL}/${data.fullPath}`,
+  //               },
+  //             ]);
+
+  //             if (error) {
+  //               throw new Error(`Error: ${error.message}`);
+  //             }
+
+  //             setProgresses((prevState) => ({
+  //               ...prevState,
+  //               [file.name]: 100,
+  //             }));
+
+  //             resolve();
+  //           } catch (error) {
+  //             console.log(error);
+  //             setFormMessage({
+  //               type: `error`,
+  //               message: error.message,
+  //             });
+  //             reject(error);
+  //           }
+  //         });
+  //       });
+
+  //       await Promise.all(uploadPromises);
+  //     } catch (error) {
+  //       throw new Error("One or more uploads failed");
+  //     }
+  //   };
+
+  //   toast.promise(uploadProcess(), {
+  //     loading: "Uploading images...",
+  //     success: (data) => {
+  //       setTimeout(() => {
+  //         setReadyToTagfiles(true);
+  //         setPayloadPosting(false);
+  //         setPageContent({
+  //           heading: `Make your photos and videos easy to find and be seen.`,
+  //           description: `Add some keywords that describe your photo and what is in it.`,
+  //         });
+  //       }, 500);
+  //       return `${files.length} image(s) uploaded successfully!`;
+  //     },
+  //     error: (data) => {
+  //       setPayloadPosting(false);
+  //       return "Some images failed to upload. Please try again.";
+  //     },
+  //   });
+  // };
+
   const handleUploads = async (e) => {
     e.preventDefault();
     if (!files?.length) return;
@@ -70,11 +164,20 @@ const FileUploader = ({
 
     const uploadedFileNames = new Set();
 
-    console.log(files);
+    const compressImage = (file) =>
+      new Promise((resolve, reject) => {
+        new Compressor(file, {
+          quality: 0.6,
+          maxWidth: 2000,
+          maxHeight: 2000,
+          success: (compressedFile) => resolve(compressedFile),
+          error: (err) => reject(err),
+        });
+      });
 
     const uploadProcess = async () => {
       try {
-        const uploadPromises = files.map((file) => {
+        const uploadPromises = files.map(async (file) => {
           if (uploadedFileNames.has(file.name)) {
             console.log(
               `File ${file.name} is a duplicate and will not be uploaded.`
@@ -84,48 +187,53 @@ const FileUploader = ({
 
           uploadedFileNames.add(file.name);
 
-          return new Promise(async (resolve, reject) => {
+          try {
+            setProgresses((prevState) => ({
+              ...prevState,
+              [file.name]: getRandomNumber(5, 20),
+            }));
+
+            let fileToUpload = file;
             try {
-              setProgresses((prevState) => ({
-                ...prevState,
-                [file.name]: getRandomNumber(5, 20),
-              }));
-
-              const { data, error } = await POST__uploadFile(
-                file,
-                `images`,
-                `${userId}/${slugify(file.name)}-${uuidv4()}`
+              fileToUpload = await compressImage(file);
+              console.log(`successfully compressed ${file.name}`);
+            } catch (compressionError) {
+              console.warn(
+                `Compression failed for ${file.name}. Proceeding with original file.`,
+                compressionError
               );
-
-              console.log(`posted data`, data);
-
-              setUploadedFiles((prevState) => [
-                ...prevState,
-                {
-                  name: file.name,
-                  src: `${supabaseStorageBucketURL}/${data.fullPath}`,
-                },
-              ]);
-
-              if (error) {
-                throw new Error(`Error: ${error.message}`);
-              }
-
-              setProgresses((prevState) => ({
-                ...prevState,
-                [file.name]: 100,
-              }));
-
-              resolve();
-            } catch (error) {
-              console.log(error);
-              setFormMessage({
-                type: `error`,
-                message: error.message,
-              });
-              reject(error);
             }
-          });
+
+            const { data, error } = await POST__uploadFile(
+              fileToUpload,
+              `images`,
+              `${userId}/${slugify(file.name)}-${uuidv4()}`
+            );
+
+            if (error) {
+              throw new Error(`Upload error: ${error.message}`);
+            }
+
+            setUploadedFiles((prevState) => [
+              ...prevState,
+              {
+                name: file.name,
+                src: `${supabaseStorageBucketURL}/${data.fullPath}`,
+              },
+            ]);
+
+            setProgresses((prevState) => ({
+              ...prevState,
+              [file.name]: 100,
+            }));
+          } catch (error) {
+            console.error(`Error uploading ${file.name}:`, error);
+            setFormMessage({
+              type: `error`,
+              message: `Failed to upload ${file.name}: ${error.message}`,
+            });
+            throw error; // Propagate error to handle in `Promise.all`
+          }
         });
 
         await Promise.all(uploadPromises);
@@ -136,7 +244,7 @@ const FileUploader = ({
 
     toast.promise(uploadProcess(), {
       loading: "Uploading images...",
-      success: (data) => {
+      success: () => {
         setTimeout(() => {
           setReadyToTagfiles(true);
           setPayloadPosting(false);
@@ -147,7 +255,7 @@ const FileUploader = ({
         }, 500);
         return `${files.length} image(s) uploaded successfully!`;
       },
-      error: (data) => {
+      error: () => {
         setPayloadPosting(false);
         return "Some images failed to upload. Please try again.";
       },

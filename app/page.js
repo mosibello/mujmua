@@ -1,12 +1,24 @@
+import React from "react";
 import Bounded from "@/components/wrappers/Bounded";
 import Container from "@/components/wrappers/Container";
-import Gallery from "@/components/ui/Gallery";
+import GalleryGridWrapper from "@/components/ui/GalleryGridWrapper";
 import Image from "next/image";
 import Heading from "@/components/ui/Heading";
 import Paragraph from "@/components/ui/Paragraph";
 import Button from "@/components/ui/Button";
+import { GET__getPhotos } from "@/lib/data-service";
 
-export default function Home() {
+export default async function Home() {
+  const initialMediaRange = {
+    start: 0,
+    end: 9,
+  };
+  const { photos, error } = await GET__getPhotos(
+    true,
+    initialMediaRange.start,
+    initialMediaRange.end
+  );
+
   return (
     <>
       <Bounded className="b__size-lg b__hero_variant01 relative">
@@ -41,9 +53,14 @@ export default function Home() {
             Free Stock Photos
           </Heading>
         </Container>
-        <Container className="mt-4 pt-5">
-          <Gallery />
-        </Container>
+        {photos && (
+          <Container className="mt-4 pt-5">
+            <GalleryGridWrapper
+              initialMedia={photos}
+              initialMediaRange={initialMediaRange}
+            />
+          </Container>
+        )}
       </Bounded>
     </>
   );

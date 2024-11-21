@@ -6,6 +6,8 @@ const nextConfig = {
     ignoreDuringBuilds: true,
   },
   images: {
+    loader: "custom",
+    loaderFile: "components/ui/ImageLoader.js",
     domains: [
       "23219927.fs1.hubspotusercontent-na1.net",
       "ik.imagekit.io",
