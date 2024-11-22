@@ -1,8 +1,9 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import GalleryGrid from "@/components/ui/GalleryGrid";
-import Button from "@/components/ui/Button";
 import { GET__getPhotos } from "@/services/queries-csr";
+import InfiniteScroll from "react-infinite-scroll-component";
+import Spinner from "@/components/ui/Spinner";
 
 const GalleryGridWrapper = ({
   initialMedia,
@@ -11,58 +12,63 @@ const GalleryGridWrapper = ({
   initialFilters,
 }) => {
   const rangeDifference = initialMediaRange.end - initialMediaRange.start + 1;
-  const [buttonClickCounter, setButtonClickCounter] = useState(0);
+
   const [media, setMedia] = useState(initialMedia);
   const [mediaRange, setMediaRange] = useState({
     start: media.length,
     end: initialMediaRange.end + media.length,
   });
-  const [photosIsLoading, setPhotosIsLoading] = useState(false);
-  const [totalRowsRendered, setTotalRowsRendered] = useState(rangeDifference);
+  const [hasMore, setHasMore] = useState(media.length < totalCount);
 
   const handleLoadPhotos = async () => {
-    setPhotosIsLoading(true);
-    const { photos, error } = await GET__getPhotos(
-      mediaRange.start,
-      mediaRange.end,
-      initialFilters
-    );
-    if (photos) {
-      setMedia((prevState) => [...prevState, ...photos]);
-      setMediaRange((prevState) => ({
-        start: prevState.start + rangeDifference,
-        end: prevState.end + rangeDifference,
-      }));
-      setButtonClickCounter((prevState) => prevState + 1);
-      setTotalRowsRendered((prevState) => prevState + rangeDifference);
-      setPhotosIsLoading(false);
+    try {
+      const { photos, error } = await GET__getPhotos(
+        mediaRange.start,
+        mediaRange.end,
+        initialFilters
+      );
+
+      if (error) {
+        console.error("Error loading photos:", error);
+        return;
+      }
+
+      if (photos && photos.length > 0) {
+        setMedia((prevState) => [...prevState, ...photos]);
+        setMediaRange((prevState) => ({
+          start: prevState.start + rangeDifference,
+          end: prevState.end + rangeDifference,
+        }));
+        if (media.length + photos.length >= totalCount) {
+          setHasMore(false);
+        }
+      } else {
+        setHasMore(false);
+      }
+    } catch (err) {
+      console.error("Unexpected error:", err);
     }
   };
 
-  useEffect(() => {
-    console.log(`initial media range:`, initialMediaRange);
-    console.log(`next media range:`, mediaRange);
-    console.log(`total rows rendered:`, totalRowsRendered);
-    // console.log(`media:`, media);
-  }, [buttonClickCounter]);
-
   return (
-    <>
+    <InfiniteScroll
+      dataLength={media.length}
+      next={handleLoadPhotos}
+      hasMore={hasMore}
+      loader={
+        <div className="">
+          <Spinner />
+        </div>
+      }
+      scrollThreshold={1}
+      endMessage={
+        <p style={{ textAlign: "center" }}>
+          <b>Yay! You have seen it all</b>
+        </p>
+      }
+    >
       <GalleryGrid media={media} />
-      <div className="text-center mt-[3rem]">
-        {totalRowsRendered >= totalCount ? (
-          ``
-        ) : (
-          <Button
-            title="Load More"
-            actionable
-            isLoading={photosIsLoading}
-            onClick={() => handleLoadPhotos()}
-            theme={`primary`}
-          />
-        )}
-      </div>
-    </>
+    </InfiniteScroll>
   );
 };
 

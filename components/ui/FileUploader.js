@@ -105,7 +105,7 @@ const FileUploader = ({
             const { data, error } = await POST__uploadFile(
               fileToUpload,
               `images`,
-              `${userId}/${slugify(file.name)}-${uuidv4()}`
+              `${userId}/${slugify(file.name).toLowerCase()}-${uuidv4()}`
             );
 
             if (error) {
