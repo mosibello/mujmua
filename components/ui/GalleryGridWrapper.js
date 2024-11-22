@@ -60,12 +60,8 @@ const GalleryGridWrapper = ({
           <Spinner />
         </div>
       }
-      scrollThreshold={1}
-      endMessage={
-        <p style={{ textAlign: "center" }}>
-          <b>Yay! You have seen it all</b>
-        </p>
-      }
+      scrollThreshold={0.8}
+      endMessage={``}
     >
       <GalleryGrid media={media} />
     </InfiniteScroll>
