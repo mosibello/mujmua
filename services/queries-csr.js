@@ -9,8 +9,8 @@ export async function GET__getPhotos(
   let query = supabase
     .from("photos")
     .select("*, author(*)", { count: "exact" })
-    .range(rangeStart, rangeEnd);
-  // .order("created_at", { ascending: false });
+    .range(rangeStart, rangeEnd)
+    .order("created_at", { ascending: false });
   if (filters && typeof filters === "object") {
     for (const [key, value] of Object.entries(filters)) {
       if (Array.isArray(value)) {

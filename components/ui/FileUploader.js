@@ -11,7 +11,6 @@ import { ScrollArea } from "@/components/ui/shadcn/scroll-area";
 import { toast } from "sonner";
 import { formatBytes, getRandomNumber } from "../../lib/helpers";
 import { Progress } from "@/components/ui/shadcn/progress";
-import { useForm } from "react-hook-form";
 import { useAppContext } from "@/context/AppWrapper";
 import { v4 as uuidv4 } from "uuid";
 import { POST__uploadFile, POST__insertPhotos } from "@/services/actions";
@@ -33,17 +32,7 @@ const FileUploader = ({
   multiple = false,
   disabled = false,
 }) => {
-  const {
-    register,
-    handleSubmit,
-    control,
-    reset,
-    formState: { errors },
-    formState: { isValid },
-  } = useForm({
-    mode: "all",
-  });
-
+  const formRefs = useRef([]);
   const [files, setFiles] = useState([]);
   const [payloadPosting, setPayloadPosting] = useState(false);
   const [formMessage, setFormMessage] = useState(null);
@@ -57,103 +46,12 @@ const FileUploader = ({
   });
   const [readyToRedirectOnSuccess, setReadyToRedirectOnSuccess] =
     useState(false);
+  const [formValidities, setFormValidities] = useState([]);
+  const [allFormsValid, setAllFormsValid] = useState(false);
 
   const { user } = useAppContext();
   const userId = user?.data?.user?.id;
   const userMetaData = user.data.user.user_metadata;
-
-  // const handleUploads = async (e) => {
-  //   e.preventDefault();
-  //   if (!files?.length) return;
-
-  //   setPayloadPosting(true);
-  //   setUploadingIntent(uploadingIntent + 1);
-
-  //   const uploadedFileNames = new Set();
-
-  //   console.log(files);
-
-  //   const uploadProcess = async () => {
-  //     try {
-  //       const uploadPromises = files.map((file) => {
-  //         if (uploadedFileNames.has(file.name)) {
-  //           console.log(
-  //             `File ${file.name} is a duplicate and will not be uploaded.`
-  //           );
-  //           return Promise.resolve();
-  //         }
-
-  //         uploadedFileNames.add(file.name);
-
-  //         return new Promise(async (resolve, reject) => {
-  //           try {
-  //             setProgresses((prevState) => ({
-  //               ...prevState,
-  //               [file.name]: getRandomNumber(5, 20),
-  //             }));
-
-  //             const { data, error } = await POST__uploadFile(
-  //               file,
-  //               `images`,
-  //               `${userId}/${slugify(file.name)}-${uuidv4()}`
-  //             );
-
-  //             console.log(`posted data`, data);
-
-  //             setUploadedFiles((prevState) => [
-  //               ...prevState,
-  //               {
-  //                 name: file.name,
-  //                 src: `${supabaseStorageBucketURL}/${data.fullPath}`,
-  //               },
-  //             ]);
-
-  //             if (error) {
-  //               throw new Error(`Error: ${error.message}`);
-  //             }
-
-  //             setProgresses((prevState) => ({
-  //               ...prevState,
-  //               [file.name]: 100,
-  //             }));
-
-  //             resolve();
-  //           } catch (error) {
-  //             console.log(error);
-  //             setFormMessage({
-  //               type: `error`,
-  //               message: error.message,
-  //             });
-  //             reject(error);
-  //           }
-  //         });
-  //       });
-
-  //       await Promise.all(uploadPromises);
-  //     } catch (error) {
-  //       throw new Error("One or more uploads failed");
-  //     }
-  //   };
-
-  //   toast.promise(uploadProcess(), {
-  //     loading: "Uploading images...",
-  //     success: (data) => {
-  //       setTimeout(() => {
-  //         setReadyToTagfiles(true);
-  //         setPayloadPosting(false);
-  //         setPageContent({
-  //           heading: `Make your photos and videos easy to find and be seen.`,
-  //           description: `Add some keywords that describe your photo and what is in it.`,
-  //         });
-  //       }, 500);
-  //       return `${files.length} image(s) uploaded successfully!`;
-  //     },
-  //     error: (data) => {
-  //       setPayloadPosting(false);
-  //       return "Some images failed to upload. Please try again.";
-  //     },
-  //   });
-  // };
 
   const handleUploads = async (e) => {
     e.preventDefault();
@@ -306,7 +204,26 @@ const FileUploader = ({
     return "preview" in file && typeof file.preview === "string";
   }
 
-  const formRefs = useRef([]);
+  const handleValidityChange = (index, isValid) => {
+    setFormValidities((prevValidities) => {
+      const updatedValidities = [...prevValidities];
+      updatedValidities[index] = isValid;
+      setAllFormsValid(updatedValidities.every(Boolean)); // Check if all forms are valid
+      return updatedValidities;
+    });
+  };
+
+  // const handleValidityChange = (index, isValid) => {
+  //   setFormValidities((prevValidities) => {
+  //     const updatedValidities = [...prevValidities];
+  //     updatedValidities[index] = isValid;
+  //     // Avoid triggering additional renders by deriving `allFormsValid` directly here
+  //     const allValid = updatedValidities.every(Boolean);
+  //     setAllFormsValid(allValid);
+
+  //     return updatedValidities;
+  //   });
+  // };
 
   const handlePostPhotos = async () => {
     setPayloadPosting(true);
@@ -335,6 +252,12 @@ const FileUploader = ({
       toast.error(error.message);
     }
   };
+
+  // useEffect(() => {
+  //   const areAllValid = formRefs.current.every((ref) => ref?.isValid);
+  //   setAllFormsValid(areAllValid);
+  //   console.log(allFormsValid);
+  // }, [formRefs.current]);
 
   useEffect(() => {
     return () => {
@@ -379,11 +302,14 @@ const FileUploader = ({
             {uploadedFiles.map((elem, index) => {
               return (
                 <FileEditorCard
-                  ref={(el) => (formRefs.current[index] = el)} // Attach refs dynamically
+                  ref={(el) => (formRefs.current[index] = el)}
                   className={`mb-[2rem]`}
                   file={elem}
                   key={index}
                   authorId={userId}
+                  onValidityChange={(isValid) =>
+                    handleValidityChange(index, isValid)
+                  }
                 />
               );
             })}
@@ -395,7 +321,7 @@ const FileUploader = ({
                   isLoading={payloadPosting}
                   onClick={() => handlePostPhotos()}
                   theme={`primary`}
-                  isDisabled={readyToRedirectOnSuccess}
+                  isDisabled={!allFormsValid || readyToRedirectOnSuccess}
                 />
               </div>
             </StickyBottomDrawer>

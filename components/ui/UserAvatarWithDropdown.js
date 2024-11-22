@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/shadcn/dropdown-menu";
 import { POST__signOut } from "@/services/actions";
 import UserAvatar from "./UserAvatar";
+import Link from "next/link";
 
 const UserAvatarWithDropdown = ({ user }) => {
   const initials = user?.user_metadata?.first_name[0];
@@ -28,11 +29,11 @@ const UserAvatarWithDropdown = ({ user }) => {
                 My Account
               </DropdownMenuItem>
             </a>
-            <a href={`/${handle}`} className="u__inherited-anchor">
+            <Link href={`/${handle}`} className="u__inherited-anchor">
               <DropdownMenuItem className="cursor-pointer">
                 Profile
               </DropdownMenuItem>
-            </a>
+            </Link>
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
           <DropdownMenuItem

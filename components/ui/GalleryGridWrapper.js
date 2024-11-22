@@ -8,6 +8,7 @@ const GalleryGridWrapper = ({
   initialMedia,
   initialMediaRange,
   totalCount,
+  initialFilters,
 }) => {
   const rangeDifference = initialMediaRange.end - initialMediaRange.start + 1;
   const [buttonClickCounter, setButtonClickCounter] = useState(0);
@@ -23,7 +24,8 @@ const GalleryGridWrapper = ({
     setPhotosIsLoading(true);
     const { photos, error } = await GET__getPhotos(
       mediaRange.start,
-      mediaRange.end
+      mediaRange.end,
+      initialFilters
     );
     if (photos) {
       setMedia((prevState) => [...prevState, ...photos]);

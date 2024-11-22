@@ -11,14 +11,15 @@ import { GET__getPhotos } from "@/services/queries-ssr";
 export default async function Home() {
   const initialMediaRange = {
     start: 0,
-    end: 2,
+    end: 7,
   };
-  const { photos, count, error } = await GET__getPhotos(
-    initialMediaRange.start,
-    initialMediaRange.end
-  );
+  const {
+    photos: initialMedia,
+    count: totalCount,
+    error,
+  } = await GET__getPhotos(initialMediaRange.start, initialMediaRange.end);
 
-  console.log(count);
+  console.log(totalCount);
 
   return (
     <>
@@ -54,12 +55,13 @@ export default async function Home() {
             Free Stock Photos
           </Heading>
         </Container>
-        {photos && (
+        {initialMedia && (
           <Container className="mt-4 pt-5">
             <GalleryGridWrapper
-              initialMedia={photos}
+              initialMedia={initialMedia}
               initialMediaRange={initialMediaRange}
-              totalCount={count}
+              initialFilters={null}
+              totalCount={totalCount}
             />
           </Container>
         )}
