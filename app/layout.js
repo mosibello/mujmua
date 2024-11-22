@@ -2,7 +2,8 @@ import "./globals.css";
 import "@/styles/index.scss";
 import Layout from "@/components/wrappers/Layout";
 import localFont from "next/font/local";
-import { GET__getUser } from "@/lib/data-service";
+import NextTopLoader from "nextjs-toploader";
+import { GET__getUser } from "@/services/queries-ssr";
 import { AppWrapper } from "@/context/AppWrapper";
 import { Toaster } from "@/components/ui/shadcn/sonner";
 
@@ -23,6 +24,12 @@ export default async function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={`${pacaembu.variable}`}>
+        <NextTopLoader
+          color="var(--t-primary-branding-color)"
+          showSpinner={false}
+          height={2}
+          zIndex={999999}
+        />
         <AppWrapper user={user}>
           <Layout>{children}</Layout>
         </AppWrapper>

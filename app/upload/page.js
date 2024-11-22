@@ -1,12 +1,15 @@
 import Bounded from "@/components/wrappers/Bounded";
-
 import FileUploader from "@/components/ui/FileUploader";
+import Gate from "@/components/misc/Gate";
 
 const UploadPage = () => {
   return (
-    <Bounded className="b__size-md b__size-fit-to-screen">
-      <FileUploader />
-    </Bounded>
+    <>
+      <Gate />
+      <Bounded className="b__size-md b__size-fit-to-screen">
+        <FileUploader />
+      </Bounded>
+    </>
   );
 };
 

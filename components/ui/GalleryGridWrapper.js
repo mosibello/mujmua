@@ -2,44 +2,63 @@
 import React, { useState, useEffect } from "react";
 import GalleryGrid from "@/components/ui/GalleryGrid";
 import Button from "@/components/ui/Button";
-import { GET__getPhotos } from "@/lib/data-service-client";
+import { GET__getPhotos } from "@/services/queries-csr";
 
-const GalleryGridWrapper = ({ initialMedia, initialMediaRange }) => {
-  const rangeDifference = initialMediaRange.end - initialMediaRange.start;
+const GalleryGridWrapper = ({
+  initialMedia,
+  initialMediaRange,
+  totalCount,
+}) => {
+  const rangeDifference = initialMediaRange.end - initialMediaRange.start + 1;
+  const [buttonClickCounter, setButtonClickCounter] = useState(0);
   const [media, setMedia] = useState(initialMedia);
   const [mediaRange, setMediaRange] = useState({
-    start: media.length + 1,
-    end: initialMediaRange.end + (media.length + 1),
+    start: media.length,
+    end: initialMediaRange.end + media.length,
   });
   const [photosIsLoading, setPhotosIsLoading] = useState(false);
+  const [totalRowsRendered, setTotalRowsRendered] = useState(rangeDifference);
+
   const handleLoadPhotos = async () => {
     setPhotosIsLoading(true);
     const { photos, error } = await GET__getPhotos(
-      false,
       mediaRange.start,
       mediaRange.end
     );
     if (photos) {
       setMedia((prevState) => [...prevState, ...photos]);
       setMediaRange((prevState) => ({
-        start: (prevState.start += rangeDifference),
-        end: (prevState.end += rangeDifference),
+        start: prevState.start + rangeDifference,
+        end: prevState.end + rangeDifference,
       }));
+      setButtonClickCounter((prevState) => prevState + 1);
+      setTotalRowsRendered((prevState) => prevState + rangeDifference);
       setPhotosIsLoading(false);
     }
-    console.log(mediaRange);
   };
+
+  useEffect(() => {
+    console.log(`initial media range:`, initialMediaRange);
+    console.log(`next media range:`, mediaRange);
+    console.log(`total rows rendered:`, totalRowsRendered);
+    // console.log(`media:`, media);
+  }, [buttonClickCounter]);
+
   return (
     <>
       <GalleryGrid media={media} />
       <div className="text-center mt-[3rem]">
-        <Button
-          title="Load More"
-          actionable
-          isLoading={photosIsLoading}
-          onClick={() => handleLoadPhotos()}
-          theme={`primary`}
-        />
+        {totalRowsRendered >= totalCount ? (
+          ``
+        ) : (
+          <Button
+            title="Load More"
+            actionable
+            isLoading={photosIsLoading}
+            onClick={() => handleLoadPhotos()}
+            theme={`primary`}
+          />
+        )}
       </div>
     </>
   );

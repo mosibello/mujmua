@@ -1,5 +1,4 @@
 import { createClient } from "@/supabase/server";
-import { createClient as createBrowserClient } from "@/supabase/client";
 
 export async function GET__getUser() {
   const supabase = await createClient();
@@ -18,17 +17,16 @@ export async function GET__getProfileByHandle(handle) {
 }
 
 export async function GET__getPhotos(
-  ssr = true,
   rangeStart = 0,
   rangeEnd = 8,
   filters = {}
 ) {
-  const supabase = ssr ? await createClient() : createBrowserClient();
+  const supabase = await createClient();
   let query = supabase
     .from("photos")
-    .select("*, author(*)")
-    .range(rangeStart, rangeEnd)
-    .order("created_at", { ascending: false });
+    .select("*, author(*)", { count: "exact" })
+    .range(rangeStart, rangeEnd);
+  // .order("created_at", { ascending: false });
   if (filters && typeof filters === "object") {
     for (const [key, value] of Object.entries(filters)) {
       if (Array.isArray(value)) {
@@ -39,6 +37,6 @@ export async function GET__getPhotos(
       }
     }
   }
-  const { data: photos, error } = await query;
-  return { photos, error };
+  const { data: photos, count, error } = await query;
+  return { photos, count, error };
 }

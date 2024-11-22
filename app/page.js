@@ -6,18 +6,19 @@ import Image from "next/image";
 import Heading from "@/components/ui/Heading";
 import Paragraph from "@/components/ui/Paragraph";
 import Button from "@/components/ui/Button";
-import { GET__getPhotos } from "@/lib/data-service";
+import { GET__getPhotos } from "@/services/queries-ssr";
 
 export default async function Home() {
   const initialMediaRange = {
     start: 0,
-    end: 9,
+    end: 2,
   };
-  const { photos, error } = await GET__getPhotos(
-    true,
+  const { photos, count, error } = await GET__getPhotos(
     initialMediaRange.start,
     initialMediaRange.end
   );
+
+  console.log(count);
 
   return (
     <>
@@ -58,6 +59,7 @@ export default async function Home() {
             <GalleryGridWrapper
               initialMedia={photos}
               initialMediaRange={initialMediaRange}
+              totalCount={count}
             />
           </Container>
         )}

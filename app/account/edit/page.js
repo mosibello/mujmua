@@ -5,10 +5,11 @@ import Spinner from "@/components/ui/Spinner";
 import Form from "@/components/ui/Form";
 import Bounded from "@/components/wrappers/Bounded";
 import Container from "@/components/wrappers/Container";
-import { SCHEMA__ProfileForm, SCHEMA__SignupForm } from "@/lib/schema";
+import { SCHEMA__ProfileForm } from "@/lib/schema";
 import { useForm } from "react-hook-form";
 import { createClient } from "@/supabase/client";
 import { useAppContext } from "@/context/AppWrapper";
+import { loginPageUrl } from "@/lib/constants";
 
 const EditAccount = () => {
   const {
@@ -26,7 +27,7 @@ const EditAccount = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   const { user } = useAppContext();
-  const { user_metadata: userMetaData } = user.data.user;
+  const { user_metadata: userMetaData } = user?.data?.user || ``;
 
   const supabase = createClient();
 
@@ -56,16 +57,20 @@ const EditAccount = () => {
   };
 
   useEffect(() => {
-    if (user) {
+    if (user && userMetaData) {
       reset({
-        first_name: userMetaData.first_name,
-        last_name: userMetaData.last_name,
-        short_bio: userMetaData.short_bio,
-        city: userMetaData.city,
-        country: userMetaData.country,
-        website: userMetaData.website,
+        first_name: userMetaData?.first_name,
+        last_name: userMetaData?.last_name,
+        short_bio: userMetaData?.short_bio,
+        city: userMetaData?.city,
+        country: userMetaData?.country,
+        website: userMetaData?.website,
       });
       setIsLoading(false);
+    } else {
+      if (typeof window !== "undefined") {
+        window.location.href = loginPageUrl;
+      }
     }
   }, []);
 

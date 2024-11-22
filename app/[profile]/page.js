@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { GET__getProfileByHandle } from "@/lib/data-service";
+import { GET__getProfileByHandle } from "@/services/queries-ssr";
 import Container from "@/components/wrappers/Container";
 import Bounded from "@/components/wrappers/Bounded";
 import Heading from "@/components/ui/Heading";

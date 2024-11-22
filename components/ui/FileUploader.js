@@ -14,7 +14,7 @@ import { Progress } from "@/components/ui/shadcn/progress";
 import { useForm } from "react-hook-form";
 import { useAppContext } from "@/context/AppWrapper";
 import { v4 as uuidv4 } from "uuid";
-import { POST__uploadFile, POST__insertPhotos } from "../../lib/actions";
+import { POST__uploadFile, POST__insertPhotos } from "@/services/actions";
 import slugify from "slugify";
 import { supabaseStorageBucketURL } from "@/lib/constants";
 import Container from "@/components/wrappers/Container";
