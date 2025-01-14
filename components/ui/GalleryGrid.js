@@ -42,7 +42,7 @@ const MasonryCard = ({ index, data: elem }) => {
         alt={elem.title}
         width="1000"
         height="1000"
-        className="w-full h-auto rounded-lg"
+        className="w-full h-auto rounded-lg bg-gray-100"
       />
       <div className="absolute inset-0 rounded-lg transition-opacity duration-200 bg-black/40 opacity-0 hover:opacity-100">
         <Link
