@@ -44,7 +44,7 @@ export default async function Home() {
               </Paragraph>
             </div>
             <div className="mt-4 pt-3">
-              <Button title={`Explore More`} />
+              <Button title={`Get Started`} destination={`/upload`} />
             </div>
           </div>
         </Container>

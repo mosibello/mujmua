@@ -574,6 +574,23 @@
       }
     }
   }
+  &__avatar-row {
+    display: flex;
+    align-items: center;
+    margin-left: -6px;
+    margin-right: -6px;
+    &__col {
+      padding-left: 6px;
+      padding-right: 6px;
+    }
+    &__anchor {
+      &:hover {
+        span {
+          text-decoration: underline !important;
+        }
+      }
+    }
+  }
   &__lib {
     &__dropdown-menu {
       z-index: 999999;

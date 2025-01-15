@@ -3,9 +3,9 @@
 import React from "react";
 import Image from "next/image";
 import Button from "@/components/ui/Button";
-import UserAvatar from "./UserAvatar";
+import UserAvatar from "@/components/ui/UserAvatar";
 import Link from "next/link";
-import { rootURL } from "../../lib/constants";
+import { rootURL } from "@/lib/constants";
 import { Masonry } from "masonic";
 import slugify from "slugify";
 
@@ -35,14 +35,14 @@ const MasonryCard = ({ index, data: elem }) => {
   return (
     <div
       key={index}
-      className="c__masonry-card relative mb-4 u__cursor-pointer"
+      className="c__masonry-card relative mb-4 u__cursor-pointer bg-gray-100 rounded-lg"
     >
       <Image
         src={elem.source}
         alt={elem.title}
         width="1000"
         height="1000"
-        className="w-full h-auto rounded-lg bg-gray-100"
+        className="w-full h-auto rounded-lg"
       />
       <div className="absolute inset-0 rounded-lg transition-opacity duration-200 bg-black/40 opacity-0 hover:opacity-100">
         <Link

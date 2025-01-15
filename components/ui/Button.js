@@ -4,6 +4,7 @@ import React from "react";
 const Button = ({
   title,
   destination,
+  target,
   className,
   linkClassName,
   theme = `primary`,
@@ -54,6 +55,7 @@ const Button = ({
                 linkClassName ? linkClassName : ``
               }`}
               href={destination || "#"}
+              target={target || `_self`}
             >
               <span
                 className={`c__button c__button--${theme} ${

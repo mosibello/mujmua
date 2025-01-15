@@ -40,3 +40,13 @@ export async function GET__getPhotos(
   const { data: photos, count, error } = await query;
   return { photos, count, error };
 }
+
+export async function GET__getPhotoById(id) {
+  const supabase = await createClient();
+  const { data: photo, error } = await supabase
+    .from("photos")
+    .select("*, author(*)")
+    .eq("id", id)
+    .single();
+  return { photo, error };
+}

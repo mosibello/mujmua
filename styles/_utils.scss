@@ -139,6 +139,13 @@
     &-light {
       color: var(--t-light-text-color);
     }
+    &-light {
+      &--with-hover {
+        &:hover {
+          color: var(--t-light-text-hover-color);
+        }
+      }
+    }
     &-branding {
       &-primary {
         color: var(--t-primary-branding-color);
