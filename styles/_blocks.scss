@@ -402,6 +402,9 @@
   &__photo {
     &__viewport {
       &__header {
+        &__row {
+          align-items: center;
+        }
         &__actions {
           &-wrapper {
             display: flex;

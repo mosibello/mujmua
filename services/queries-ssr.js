@@ -50,3 +50,17 @@ export async function GET__getPhotoById(id) {
     .single();
   return { photo, error };
 }
+
+export async function GET__getUserLikeStatusForPhoto(userId, photoId) {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("likes")
+    .select("*")
+    .eq("user", userId)
+    .eq("photo", photoId)
+    .single();
+  if (error && error.code !== "PGRST116") {
+    return { data: `User like not found`, error };
+  }
+  return { data, error };
+}
