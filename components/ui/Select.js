@@ -10,11 +10,12 @@ export default ({
   onChange,
   onBlur,
   value,
+  name,
 }) => (
   <Select
     defaultValue={defaultValue}
     isMulti={isMulti}
-    name="colors"
+    name={name}
     options={options}
     className={`basic-multi-select ${className}`}
     classNamePrefix="select"
