@@ -267,6 +267,7 @@ form {
   input[type="number"],
   input[type="file"],
   select,
+  .c__form__select,
   textarea {
     color: var(--t-body-color);
     border: 1px solid var(--t-form-input-border-color);
@@ -305,6 +306,46 @@ form {
     background-color: transparent;
     @media (min-width: 768px) {
       background-position: 98% 50%;
+    }
+  }
+  .c__form__select {
+    padding: 5px 8px;
+    .select {
+      &__control {
+        border: none;
+        min-height: 0;
+        box-shadow: none !important;
+      }
+      &__value-container {
+        padding: 0;
+      }
+      &__input-container,
+      &__input {
+        border: none !important;
+        box-shadow: none !important;
+        outline: none !important;
+      }
+      &__multi-value {
+        background-color: #eee;
+        border-radius: 8px;
+        &__remove {
+          position: relative;
+          top: 0.5px;
+          &:hover {
+            background: unset;
+            color: unset;
+          }
+        }
+      }
+      &__menu {
+        left: 0;
+        border-radius: var(--t-form-input-border-radius);
+      }
+      &__option {
+        &--is-focused {
+          background-color: #f4f4f5;
+        }
+      }
     }
   }
 }

@@ -1,8 +1,10 @@
 "use client";
 import React from "react";
+import { Controller } from "react-hook-form";
 import parse from "html-react-parser";
 import Button from "./Button";
 import { baseUrl } from "@/lib/constants";
+import Select from "@/components/ui/Select";
 
 const Form = ({
   formFields,
@@ -14,6 +16,7 @@ const Form = ({
   formMessage,
   buttonTitle = "Get Started",
   disableSubmissionOnEnter,
+  control,
 }) => {
   const checkKeyDown = (e) => {
     if (e.key === "Enter") e.preventDefault();
@@ -67,6 +70,75 @@ const Form = ({
                             pattern: pattern ? pattern : null,
                           })}
                         ></textarea>
+                      ) : type === "select" ? (
+                        (() => {
+                          const { options, isMulti } = elem;
+                          return (
+                            <>
+                              <Controller
+                                name={name}
+                                control={control}
+                                rules={{
+                                  required: required
+                                    ? required.message
+                                    : required,
+                                  pattern: pattern ? pattern : null,
+                                }}
+                                defaultValue={
+                                  defaultValue ? defaultValue : null
+                                }
+                                render={({ field }) => {
+                                  return (
+                                    <Select
+                                      {...field}
+                                      name={name}
+                                      className={`c__form__select ${
+                                        errors[name]
+                                          ? `c__form__input--error`
+                                          : ``
+                                      }`}
+                                      options={options}
+                                      placeholder={placeholder}
+                                      isMulti={isMulti}
+                                      onChange={(selected) => {
+                                        console.log(selected);
+                                        field.onChange(selected);
+                                      }}
+                                      onBlur={field.onBlur}
+                                      defaultValue={
+                                        defaultValue ? defaultValue : null
+                                      }
+                                      value={
+                                        field.value ?? (isMulti ? [] : null)
+                                      }
+                                    />
+                                  );
+                                }}
+                              />
+
+                              {/* <Select
+                                className={`c__form__select ${
+                                  errors[elem.name]
+                                    ? `c__form__input--error`
+                                    : ``
+                                }`}
+                                options={options}
+                                name={name}
+                                multiple
+                                type={`hidden`}
+                                placeholder={placeholder}
+                                isMulti={isMulti}
+                                defaultValue={[]}
+                                {...register(name, {
+                                  required: required
+                                    ? required.message
+                                    : required,
+                                  pattern: pattern ? pattern : null,
+                                })}
+                              /> */}
+                            </>
+                          );
+                        })()
                       ) : (
                         <input
                           className={`c__form__input ${
