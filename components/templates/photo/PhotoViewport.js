@@ -10,6 +10,7 @@ import Button from "@/components/ui/Button";
 import Image from "next/image";
 import { POST__likePhoto } from "@/services/actions";
 import { loginPageUrl } from "@/lib/constants";
+import Paragraph from "@/components/ui/Paragraph";
 
 const PhotoViewport = ({ data }) => {
   const [hasLiked, setHasLiked] = useState({
@@ -36,12 +37,13 @@ const PhotoViewport = ({ data }) => {
       userId,
       photoId
     );
-    console.log(likePhoto);
     setHasLiked((prevState) => ({
       status: !prevState.status,
       loading: false,
     }));
   };
+
+  console.log(photo);
 
   return (
     <Bounded className="b__size-sm b__photo__viewport">
@@ -124,7 +126,23 @@ const PhotoViewport = ({ data }) => {
             />
           </div>
         </div>
-        <div className="b__photo__viewport__footer"></div>
+        {photo?.title && <Paragraph>{`Title: ${photo.title}`}</Paragraph>}
+        {photo?.description && (
+          <Paragraph>{`Description: ${photo.description}`}</Paragraph>
+        )}
+        {photo?.category && (
+          <Paragraph disableParse>
+            Categories:{" "}
+            {photo.category.map((elem, idx) => {
+              return (
+                <span key={idx}>
+                  {elem.label}
+                  {idx === photo.category.length - 1 ? `` : `, `}
+                </span>
+              );
+            })}
+          </Paragraph>
+        )}
       </Container>
     </Bounded>
   );

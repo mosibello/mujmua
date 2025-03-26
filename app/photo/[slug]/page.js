@@ -5,6 +5,8 @@ import {
   GET__getUserLikeStatusForPhoto,
 } from "@/services/queries-ssr";
 import PhotoViewport from "@/components/templates/photo/PhotoViewport";
+import Heading from "@/components/ui/Heading";
+import Container from "@/components/wrappers/Container";
 
 export default async function PhotoPage({ params }) {
   params = await params;
@@ -32,6 +34,12 @@ export default async function PhotoPage({ params }) {
   return (
     <>
       <PhotoViewport data={pageData} />
+      {/* <Container>
+        <hr />
+      </Container>
+      <Container className="mt-0 mt-[2rem] pb-[2rem]">
+        <Heading className="u__h3">More like this</Heading>
+      </Container> */}
     </>
   );
 }
