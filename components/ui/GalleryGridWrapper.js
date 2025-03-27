@@ -10,6 +10,9 @@ const GalleryGridWrapper = ({
   initialMediaRange,
   totalCount,
   initialFilters,
+  order,
+  excludePhotoId,
+  recommendedParams,
 }) => {
   const rangeDifference = initialMediaRange.end - initialMediaRange.start + 1;
 
@@ -28,7 +31,10 @@ const GalleryGridWrapper = ({
       const { photos, error } = await GET__getPhotos(
         mediaRange.start,
         mediaRange.end,
-        initialFilters
+        initialFilters,
+        order,
+        excludePhotoId,
+        recommendedParams
       );
 
       if (error) {

@@ -3,9 +3,8 @@ import {
   GET__getPhotoById,
   GET__getUser,
   GET__getUserLikeStatusForPhoto,
-  GET__getRelatedPhotos,
+  GET__getPhotos,
 } from "@/services/queries-ssr";
-import { GET__getRelatedPhotos as GET__getRelatedPhotosCSR } from "@/services/queries-csr";
 import PhotoViewport from "@/components/templates/photo/PhotoViewport";
 import Heading from "@/components/ui/Heading";
 import Container from "@/components/wrappers/Container";
@@ -28,30 +27,28 @@ export default async function PhotoPage({ params }) {
   }
   photo = data.photo;
 
-  const categories = photo?.category?.map((elem) => elem.value) || [];
+  const categories = photo?.categories?.map((elem) => elem.value) || [];
   const authorId = photo?.author?.id;
   const relatedPhotosRange = {
     start: 0,
     end: 7,
   };
 
-  const relatedPhotosData = await GET__getRelatedPhotos(
-    photoId,
-    categories,
-    authorId,
+  const relatedPhotosData = await GET__getPhotos(
     relatedPhotosRange.start,
-    relatedPhotosRange.end
+    relatedPhotosRange.end,
+    {},
+    null,
+    photoId,
+    { authorId, categories }
   );
-
   const {
-    photos: relatedPhotosMedia,
-    count: relatedPhotosCount,
+    photos: relatedPhotosInitialMedia,
+    count: relatedPhotosTotalCount,
     error: relatedPhotosError,
   } = relatedPhotosData;
 
-  // console.log(relatedPhotosData);
-
-  // console.log(relatedPhotosMedia, relatedPhotosCount);
+  console.log(relatedPhotosData);
 
   const pageData = {
     photo,
@@ -62,7 +59,7 @@ export default async function PhotoPage({ params }) {
   return (
     <>
       <PhotoViewport data={pageData} />
-      {relatedPhotosMedia && relatedPhotosMedia.length > 0 && (
+      {relatedPhotosInitialMedia && relatedPhotosInitialMedia.length > 0 && (
         <>
           <Container>
             <hr />
@@ -71,10 +68,13 @@ export default async function PhotoPage({ params }) {
             <Heading className="u__h3">More like this</Heading>
             <div className="mt-4 pt-5">
               <GalleryGridWrapper
-                initialMedia={relatedPhotosMedia}
+                initialMedia={relatedPhotosInitialMedia}
                 initialMediaRange={relatedPhotosRange}
                 initialFilters={null}
-                totalCount={relatedPhotosCount}
+                order={null}
+                excludePhotoId={photoId}
+                recommendedParams={null}
+                totalCount={relatedPhotosTotalCount}
               />
             </div>
           </Container>

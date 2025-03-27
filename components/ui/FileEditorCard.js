@@ -19,6 +19,7 @@ const FileEditorCard = forwardRef(
         const formValues = methods.getValues();
         return {
           ...formValues,
+          categories: formValues.categories.map((elem) => elem.value),
           source: file?.src,
           author: authorId,
           status: `public`,

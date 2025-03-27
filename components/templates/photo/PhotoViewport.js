@@ -11,6 +11,7 @@ import Image from "next/image";
 import { POST__likePhoto } from "@/services/actions";
 import { loginPageUrl } from "@/lib/constants";
 import Paragraph from "@/components/ui/Paragraph";
+import { getCategoryLabel } from "@/lib/helpers";
 
 const PhotoViewport = ({ data }) => {
   const [hasLiked, setHasLiked] = useState({
@@ -130,14 +131,14 @@ const PhotoViewport = ({ data }) => {
         {photo?.description && (
           <Paragraph>{`Description: ${photo.description}`}</Paragraph>
         )}
-        {photo?.category && (
+        {photo?.categories && (
           <Paragraph disableParse>
             Categories:{" "}
-            {photo.category.map((elem, idx) => {
+            {photo.categories.map((elem, idx) => {
               return (
                 <span key={idx}>
-                  {elem.label}
-                  {idx === photo.category.length - 1 ? `` : `, `}
+                  {getCategoryLabel(elem)}
+                  {idx === photo.categories.length - 1 ? `` : `, `}
                 </span>
               );
             })}

@@ -6,7 +6,7 @@ const UploadPage = () => {
   return (
     <>
       <Gate />
-      <Bounded className="b__size-md b__size-fit-to-screen">
+      <Bounded className="b__size-fit-to-screen pt-[4rem] pb-[20rem]">
         <FileUploader />
       </Bounded>
     </>

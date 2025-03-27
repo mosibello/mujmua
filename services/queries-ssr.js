@@ -19,14 +19,25 @@ export async function GET__getProfileByHandle(handle) {
 export async function GET__getPhotos(
   rangeStart = 0,
   rangeEnd = 7,
-  filters = {}
+  filters = {},
+  order,
+  excludePhotoId = null,
+  recommendedParams = null
 ) {
   const supabase = await createClient();
   let query = supabase
     .from("photos")
     .select("*, author(*)", { count: "exact" })
-    .range(rangeStart, rangeEnd)
-    .order("created_at", { ascending: false });
+    .range(rangeStart, rangeEnd);
+
+  query = query.order(order?.column || "created_at", {
+    ascending: order?.ascending ?? false,
+  });
+
+  if (excludePhotoId) {
+    query = query.not("id", "eq", excludePhotoId);
+  }
+
   if (filters && typeof filters === "object") {
     for (const [key, value] of Object.entries(filters)) {
       if (Array.isArray(value)) {
@@ -37,44 +48,19 @@ export async function GET__getPhotos(
       }
     }
   }
+
+  if (recommendedParams) {
+    const { authorId, categories } = recommendedParams;
+    if (authorId) {
+      query = query
+        .order("author", { ascending: false })
+        .eq("author", authorId);
+    }
+  }
+
   const { data: photos, count, error } = await query;
+
   return { photos, count, error };
-}
-
-export async function GET__getRelatedPhotos(
-  excludePhotoId,
-  categoryValues = [],
-  authorId,
-  rangeStart = 0,
-  rangeEnd = 7
-) {
-  const supabase = await createClient();
-  let query = supabase
-    .from("photos")
-    .select("*, author(*)", { count: "exact" })
-    .not("id", "eq", excludePhotoId)
-    .range(rangeStart, rangeEnd)
-    .order("created_at", { ascending: false });
-
-  // Filter by author
-  // if (authorId) {
-  //   query = query.eq("author", authorId);
-  // }
-
-  // Filter by categories
-  // if (categoryValues && categoryValues.length > 0) {
-  //   query = query.or(
-  //     categoryValues
-  //       .map((category) => `category.cs.{\"value\":\"${category}\"}`)
-  //       .join(",")
-  //   );
-  // }
-
-  let { data: photos, count, error } = await query;
-  if (error) return { photos: [], count: 0, error };
-  photos = photos.sort(() => Math.random() - 0.5);
-
-  return { photos, count, error: null };
 }
 
 export async function GET__getPhotoById(id) {

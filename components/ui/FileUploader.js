@@ -213,18 +213,6 @@ const FileUploader = ({
     });
   };
 
-  // const handleValidityChange = (index, isValid) => {
-  //   setFormValidities((prevValidities) => {
-  //     const updatedValidities = [...prevValidities];
-  //     updatedValidities[index] = isValid;
-  //     // Avoid triggering additional renders by deriving `allFormsValid` directly here
-  //     const allValid = updatedValidities.every(Boolean);
-  //     setAllFormsValid(allValid);
-
-  //     return updatedValidities;
-  //   });
-  // };
-
   const handlePostPhotos = async () => {
     setPayloadPosting(true);
     const allFormData = formRefs.current.map((ref) =>

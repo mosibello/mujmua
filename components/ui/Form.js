@@ -101,7 +101,6 @@ const Form = ({
                                       placeholder={placeholder}
                                       isMulti={isMulti}
                                       onChange={(selected) => {
-                                        console.log(selected);
                                         field.onChange(selected);
                                       }}
                                       onBlur={field.onBlur}
@@ -115,27 +114,6 @@ const Form = ({
                                   );
                                 }}
                               />
-
-                              {/* <Select
-                                className={`c__form__select ${
-                                  errors[elem.name]
-                                    ? `c__form__input--error`
-                                    : ``
-                                }`}
-                                options={options}
-                                name={name}
-                                multiple
-                                type={`hidden`}
-                                placeholder={placeholder}
-                                isMulti={isMulti}
-                                defaultValue={[]}
-                                {...register(name, {
-                                  required: required
-                                    ? required.message
-                                    : required,
-                                  pattern: pattern ? pattern : null,
-                                })}
-                              /> */}
                             </>
                           );
                         })()

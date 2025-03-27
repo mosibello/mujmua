@@ -19,8 +19,6 @@ export default async function Home() {
     error,
   } = await GET__getPhotos(initialMediaRange.start, initialMediaRange.end);
 
-  console.log(totalCount);
-
   return (
     <>
       <Bounded className="b__size-lg b__hero_variant01 relative">
