@@ -9,7 +9,7 @@ import { rootURL } from "@/lib/constants";
 import { Masonry } from "masonic";
 import slugify from "slugify";
 
-const GalleryGrid = ({ media }) => {
+const GalleryGrid = ({ media, startIndex, stopIndex }) => {
   return (
     <>
       {media && media.length > 0 && (
@@ -20,6 +20,7 @@ const GalleryGrid = ({ media }) => {
             maxColumnCount={3}
             columnGutter={16}
             rowGutter={0}
+            onRender={(startIndex, stopIndex, media)}
           />
         </div>
       )}
@@ -28,7 +29,6 @@ const GalleryGrid = ({ media }) => {
 };
 
 const MasonryCard = ({ index, data: elem }) => {
-  console.log(elem);
   const slug = `${
     elem?.title ? slugify(elem.title.toLowerCase()) : `unnamed-photo`
   }-${elem.id}`;

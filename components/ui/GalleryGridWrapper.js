@@ -63,7 +63,11 @@ const GalleryGridWrapper = ({
       scrollThreshold={0.8}
       endMessage={``}
     >
-      <GalleryGrid media={media} />
+      <GalleryGrid
+        startIndex={mediaRange.start}
+        stopIndex={mediaRange.end}
+        media={media}
+      />
     </InfiniteScroll>
   );
 };

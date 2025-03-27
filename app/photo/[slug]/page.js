@@ -3,10 +3,12 @@ import {
   GET__getPhotoById,
   GET__getUser,
   GET__getUserLikeStatusForPhoto,
+  GET__getRelatedPhotos,
 } from "@/services/queries-ssr";
 import PhotoViewport from "@/components/templates/photo/PhotoViewport";
 import Heading from "@/components/ui/Heading";
 import Container from "@/components/wrappers/Container";
+import GalleryGridWrapper from "@/components/ui/GalleryGridWrapper";
 
 export default async function PhotoPage({ params }) {
   params = await params;
@@ -24,7 +26,28 @@ export default async function PhotoPage({ params }) {
     return notFound();
   }
   photo = data.photo;
-  console.log(userLikeStatus);
+
+  const categories = photo?.category?.map((elem) => elem.value) || [];
+  const authorId = photo?.author?.id;
+  const relatedPhotosRange = {
+    start: 0,
+    end: 7,
+  };
+
+  const {
+    photos: relatedPhotosMedia,
+    count: relatedPhotosCount,
+    error: relatedPhotosError,
+  } = await GET__getRelatedPhotos(
+    photoId,
+    null,
+    authorId,
+    relatedPhotosRange.start,
+    relatedPhotosRange.end
+  );
+
+  console.log(relatedPhotosMedia, relatedPhotosCount);
+
   const pageData = {
     photo,
     userId,
@@ -34,12 +57,20 @@ export default async function PhotoPage({ params }) {
   return (
     <>
       <PhotoViewport data={pageData} />
-      {/* <Container>
+      <Container>
         <hr />
       </Container>
       <Container className="mt-0 mt-[2rem] pb-[2rem]">
         <Heading className="u__h3">More like this</Heading>
-      </Container> */}
+        <div className="mt-4 pt-5">
+          <GalleryGridWrapper
+            initialMedia={relatedPhotosMedia}
+            initialMediaRange={relatedPhotosRange}
+            initialFilters={null}
+            totalCount={relatedPhotosCount}
+          />
+        </div>
+      </Container>
     </>
   );
 }

@@ -41,6 +41,44 @@ export async function GET__getPhotos(
   return { photos, count, error };
 }
 
+export async function GET__getRelatedPhotos(
+  excludePhotoId,
+  categoryValues = [], // Array of category "value" strings
+  authorId,
+  rangeStart = 0,
+  rangeEnd = 8
+) {
+  const supabase = await createClient();
+
+  let query = supabase
+    .from("photos")
+    .select("*, author(*)", { count: "exact" })
+    .neq("id", excludePhotoId) // Exclude the current photo
+    .order("created_at", { ascending: false });
+
+  // Filter by category values
+  if (categoryValues && categoryValues.length > 0) {
+    const categoryConditions = categoryValues
+      .map((val) => `category->value.eq.${val}`)
+      .join(",");
+
+    query = query.or(categoryConditions);
+  }
+
+  // Filter by author (if provided)
+  if (authorId) {
+    query = query.eq("author", authorId);
+  }
+
+  const {
+    data: photos,
+    count,
+    error,
+  } = await query.range(rangeStart, rangeEnd);
+
+  return { photos, count, error };
+}
+
 export async function GET__getPhotoById(id) {
   const supabase = await createClient();
   const { data: photo, error } = await supabase
