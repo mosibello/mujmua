@@ -18,7 +18,7 @@ export async function GET__getProfileByHandle(handle) {
 
 export async function GET__getPhotos(
   rangeStart = 0,
-  rangeEnd = 8,
+  rangeEnd = 7,
   filters = {}
 ) {
   const supabase = await createClient();
@@ -43,40 +43,38 @@ export async function GET__getPhotos(
 
 export async function GET__getRelatedPhotos(
   excludePhotoId,
-  categoryValues = [], // Array of category "value" strings
+  categoryValues = [],
   authorId,
   rangeStart = 0,
-  rangeEnd = 8
+  rangeEnd = 7
 ) {
   const supabase = await createClient();
-
   let query = supabase
     .from("photos")
     .select("*, author(*)", { count: "exact" })
-    .neq("id", excludePhotoId) // Exclude the current photo
+    .not("id", "eq", excludePhotoId)
+    .range(rangeStart, rangeEnd)
     .order("created_at", { ascending: false });
 
-  // Filter by category values
-  if (categoryValues && categoryValues.length > 0) {
-    const categoryConditions = categoryValues
-      .map((val) => `category->value.eq.${val}`)
-      .join(",");
+  // Filter by author
+  // if (authorId) {
+  //   query = query.eq("author", authorId);
+  // }
 
-    query = query.or(categoryConditions);
-  }
+  // Filter by categories
+  // if (categoryValues && categoryValues.length > 0) {
+  //   query = query.or(
+  //     categoryValues
+  //       .map((category) => `category.cs.{\"value\":\"${category}\"}`)
+  //       .join(",")
+  //   );
+  // }
 
-  // Filter by author (if provided)
-  if (authorId) {
-    query = query.eq("author", authorId);
-  }
+  let { data: photos, count, error } = await query;
+  if (error) return { photos: [], count: 0, error };
+  photos = photos.sort(() => Math.random() - 0.5);
 
-  const {
-    data: photos,
-    count,
-    error,
-  } = await query.range(rangeStart, rangeEnd);
-
-  return { photos, count, error };
+  return { photos, count, error: null };
 }
 
 export async function GET__getPhotoById(id) {

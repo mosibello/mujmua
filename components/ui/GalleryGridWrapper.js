@@ -14,6 +14,9 @@ const GalleryGridWrapper = ({
   const rangeDifference = initialMediaRange.end - initialMediaRange.start + 1;
 
   const [media, setMedia] = useState(initialMedia);
+  if (!media) {
+    return;
+  }
   const [mediaRange, setMediaRange] = useState({
     start: media.length,
     end: initialMediaRange.end + media.length,

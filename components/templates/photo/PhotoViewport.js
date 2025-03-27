@@ -43,7 +43,7 @@ const PhotoViewport = ({ data }) => {
     }));
   };
 
-  console.log(photo);
+  // console.log(photo);
 
   return (
     <Bounded className="b__size-sm b__photo__viewport">

@@ -5,6 +5,7 @@ import {
   GET__getUserLikeStatusForPhoto,
   GET__getRelatedPhotos,
 } from "@/services/queries-ssr";
+import { GET__getRelatedPhotos as GET__getRelatedPhotosCSR } from "@/services/queries-csr";
 import PhotoViewport from "@/components/templates/photo/PhotoViewport";
 import Heading from "@/components/ui/Heading";
 import Container from "@/components/wrappers/Container";
@@ -34,19 +35,23 @@ export default async function PhotoPage({ params }) {
     end: 7,
   };
 
-  const {
-    photos: relatedPhotosMedia,
-    count: relatedPhotosCount,
-    error: relatedPhotosError,
-  } = await GET__getRelatedPhotos(
+  const relatedPhotosData = await GET__getRelatedPhotos(
     photoId,
-    null,
+    categories,
     authorId,
     relatedPhotosRange.start,
     relatedPhotosRange.end
   );
 
-  console.log(relatedPhotosMedia, relatedPhotosCount);
+  const {
+    photos: relatedPhotosMedia,
+    count: relatedPhotosCount,
+    error: relatedPhotosError,
+  } = relatedPhotosData;
+
+  // console.log(relatedPhotosData);
+
+  // console.log(relatedPhotosMedia, relatedPhotosCount);
 
   const pageData = {
     photo,
@@ -57,20 +62,24 @@ export default async function PhotoPage({ params }) {
   return (
     <>
       <PhotoViewport data={pageData} />
-      <Container>
-        <hr />
-      </Container>
-      <Container className="mt-0 mt-[2rem] pb-[2rem]">
-        <Heading className="u__h3">More like this</Heading>
-        <div className="mt-4 pt-5">
-          <GalleryGridWrapper
-            initialMedia={relatedPhotosMedia}
-            initialMediaRange={relatedPhotosRange}
-            initialFilters={null}
-            totalCount={relatedPhotosCount}
-          />
-        </div>
-      </Container>
+      {relatedPhotosMedia && relatedPhotosMedia.length > 0 && (
+        <>
+          <Container>
+            <hr />
+          </Container>
+          <Container className="mt-0 mt-[2rem] pb-[2rem]">
+            <Heading className="u__h3">More like this</Heading>
+            <div className="mt-4 pt-5">
+              <GalleryGridWrapper
+                initialMedia={relatedPhotosMedia}
+                initialMediaRange={relatedPhotosRange}
+                initialFilters={null}
+                totalCount={relatedPhotosCount}
+              />
+            </div>
+          </Container>
+        </>
+      )}
     </>
   );
 }
