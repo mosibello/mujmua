@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import GalleryGrid from "@/components/ui/GalleryGrid";
-import { GET__getPhotos } from "@/services/queries-csr";
+// import { GET__getPhotos } from "@/services/queries-csr";
 import InfiniteScroll from "react-infinite-scroll-component";
 import Spinner from "@/components/ui/Spinner";
 
@@ -9,10 +9,8 @@ const GalleryGridWrapper = ({
   initialMedia,
   initialMediaRange,
   totalCount,
-  initialFilters,
-  order,
-  excludePhotoId,
-  recommendedParams,
+  fetchNext,
+  fetchNextParams,
 }) => {
   const rangeDifference = initialMediaRange.end - initialMediaRange.start + 1;
 
@@ -28,13 +26,10 @@ const GalleryGridWrapper = ({
 
   const handleLoadPhotos = async () => {
     try {
-      const { photos, error } = await GET__getPhotos(
+      const { photos, error } = await fetchNext(
         mediaRange.start,
         mediaRange.end,
-        initialFilters,
-        order,
-        excludePhotoId,
-        recommendedParams
+        ...(fetchNextParams ? fetchNextParams : [null])
       );
 
       if (error) {

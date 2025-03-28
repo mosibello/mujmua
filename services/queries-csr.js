@@ -8,6 +8,7 @@ export async function GET__getPhotos(
   excludePhotoId = null,
   recommendedParams = null
 ) {
+  "use server";
   const supabase = createClient();
   let query = supabase
     .from("photos")

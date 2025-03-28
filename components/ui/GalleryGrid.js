@@ -2,10 +2,11 @@
 
 import React from "react";
 import Image from "next/image";
+import Button from "@/components/ui/Button";
 import UserAvatar from "@/components/ui/UserAvatar";
 import Link from "next/link";
 import { rootURL } from "@/lib/constants";
-import { Masonry, useInfiniteLoader } from "masonic";
+import { Masonry } from "masonic";
 import slugify from "slugify";
 
 const GalleryGrid = ({ media, startIndex, stopIndex }) => {

@@ -5,6 +5,7 @@ import {
   GET__getUserLikeStatusForPhoto,
   GET__getPhotos,
 } from "@/services/queries-ssr";
+import { GET__getPhotos as GET__getPhotosCSR } from "@/services/queries-csr";
 import PhotoViewport from "@/components/templates/photo/PhotoViewport";
 import Heading from "@/components/ui/Heading";
 import Container from "@/components/wrappers/Container";
@@ -31,7 +32,7 @@ export default async function PhotoPage({ params }) {
   const authorId = photo?.author?.id;
   const relatedPhotosRange = {
     start: 0,
-    end: 7,
+    end: 10,
   };
 
   const relatedPhotosData = await GET__getPhotos(
@@ -70,11 +71,9 @@ export default async function PhotoPage({ params }) {
               <GalleryGridWrapper
                 initialMedia={relatedPhotosInitialMedia}
                 initialMediaRange={relatedPhotosRange}
-                initialFilters={null}
-                order={null}
-                excludePhotoId={photoId}
-                recommendedParams={null}
                 totalCount={relatedPhotosTotalCount}
+                fetchNext={GET__getPhotosCSR}
+                fetchNextParams={[null, null, photoId, null]}
               />
             </div>
           </Container>

@@ -7,11 +7,12 @@ import Heading from "@/components/ui/Heading";
 import Paragraph from "@/components/ui/Paragraph";
 import Button from "@/components/ui/Button";
 import { GET__getPhotos } from "@/services/queries-ssr";
+import { GET__getPhotos as GET__getPhotosCSR } from "@/services/queries-csr";
 
 export default async function Home() {
   const initialMediaRange = {
     start: 0,
-    end: 7,
+    end: 10,
   };
   const {
     photos: initialMedia,
@@ -60,9 +61,10 @@ export default async function Home() {
         {initialMedia && (
           <Container className="mt-4 pt-5">
             <GalleryGridWrapper
+              fetchNext={GET__getPhotosCSR}
+              fetchNextParams={null}
               initialMedia={initialMedia}
               initialMediaRange={initialMediaRange}
-              initialFilters={null}
               totalCount={totalCount}
             />
           </Container>
