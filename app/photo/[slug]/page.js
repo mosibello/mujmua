@@ -27,7 +27,7 @@ export default async function PhotoPage({ params }) {
   }
   photo = data.photo;
 
-  const categories = photo?.categories?.map((elem) => elem.value) || [];
+  const categories = photo?.categories;
   const authorId = photo?.author?.id;
   const relatedPhotosRange = {
     start: 0,

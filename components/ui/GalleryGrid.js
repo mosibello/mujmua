@@ -2,11 +2,10 @@
 
 import React from "react";
 import Image from "next/image";
-import Button from "@/components/ui/Button";
 import UserAvatar from "@/components/ui/UserAvatar";
 import Link from "next/link";
 import { rootURL } from "@/lib/constants";
-import { Masonry } from "masonic";
+import { Masonry, useInfiniteLoader } from "masonic";
 import slugify from "slugify";
 
 const GalleryGrid = ({ media, startIndex, stopIndex }) => {
@@ -33,7 +32,7 @@ const MasonryCard = ({ index, data: elem }) => {
     elem?.title ? slugify(elem.title.toLowerCase()) : `unnamed-photo`
   }-${elem.id}`;
   return (
-    <div
+    <article
       key={index}
       className="c__masonry-card relative mb-4 u__cursor-pointer bg-gray-100 rounded-lg"
     >
@@ -73,7 +72,7 @@ const MasonryCard = ({ index, data: elem }) => {
           </div>
         </div>
       </div>
-    </div>
+    </article>
   );
 };
 

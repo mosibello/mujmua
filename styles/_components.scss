@@ -108,7 +108,17 @@
     }
     &--secondary {
       background: var(--t-secondary-branding-color);
-      color: var(--t-cp-base-white);
+      border: 1px solid #e6e6e6;
+      // color: var(--t-cp-base-white);
+      &.c__button {
+        &--loading {
+          .c__spinner {
+            .path {
+              stroke: var(--t-primary-branding-color);
+            }
+          }
+        }
+      }
       &:hover {
         background: var(--t-secondary-branding-hover-color);
       }

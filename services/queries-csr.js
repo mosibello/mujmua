@@ -33,25 +33,25 @@ export async function GET__getPhotos(
     }
   }
 
-  if (recommendedParams) {
-    const { authorId, categories } = recommendedParams;
-    if (authorId) {
-      query = query
-        .order("author", { ascending: false })
-        .eq("author", authorId);
-    }
-    if (categories.length > 0) {
-      query = query
-        .order("categories", {
-          ascending: false,
-          nullsFirst: false,
-        })
-        .contains(
-          "categories",
-          categories.map((value) => ({ value }))
-        );
-    }
-  }
+  // if (recommendedParams) {
+  //   const { authorId, categories } = recommendedParams;
+  //   if (authorId) {
+  //     query = query
+  //       .order("author", { ascending: false })
+  //       .eq("author", authorId);
+  //   }
+  //   if (categories.length > 0) {
+  //     query = query
+  //       .order("categories", {
+  //         ascending: false,
+  //         nullsFirst: false,
+  //       })
+  //       .contains(
+  //         "categories",
+  //         categories.map((value) => ({ value }))
+  //       );
+  //   }
+  // }
 
   const { data: photos, error } = await query;
   return { photos, error };

@@ -49,14 +49,18 @@ export async function GET__getPhotos(
     }
   }
 
-  if (recommendedParams) {
-    const { authorId, categories } = recommendedParams;
-    if (authorId) {
-      query = query
-        .order("author", { ascending: false })
-        .eq("author", authorId);
-    }
-  }
+  // if (recommendedParams) {
+  //   const { authorId, categories } = recommendedParams;
+  //   if (authorId) {
+  //     query = query.order("author", { ascending: false });
+  //     // .eq("author", authorId);
+  //   }
+  //   if (categories) {
+  //     query = query.or(
+  //       categories.map((cat) => `categories.cs.{${cat}}`).join(",")
+  //     );
+  //   }
+  // }
 
   const { data: photos, count, error } = await query;
 

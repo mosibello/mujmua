@@ -1,11 +1,11 @@
 :root {
   /* Theme colors */
-  --t-primary-branding-color: #780df2;
-  --t-primary-branding-hover-color: #670bd1;
-  --t-secondary-branding-color: #0d253a;
-  --t-secondary-branding-hover-color: #081724;
+  --t-primary-branding-color: #27272a;
+  --t-primary-branding-hover-color: #000;
+  --t-secondary-branding-color: #fff;
+  --t-secondary-branding-hover-color: #fafafa;
   /* Buttons */
-  --t-button-padding: 0.65rem 1.8rem;
+  --t-button-padding: 0.6rem 1.6rem;
   --t-button-border-radius: 8px;
   /* Typography */
   --t-heading-color: #291643;
@@ -19,8 +19,10 @@
   --t-font-family-system: system-ui, -apple-system, BlinkMacSystemFont,
     “Segoe UI”, Roboto, Oxygen-Sans, Ubuntu, Cantarell, “Helvetica Neue”, Arial,
     sans-serif;
-  --t-font-family-heading: "pacaembu", var(--t-font-family-system);
-  --t-font-family-body: "pacaembu", var(--t-font-family-system);
+  --t-font-family-heading: "ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Noto Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif",
+    var(--t-font-family-system);
+  --t-font-family-body: "ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Noto Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif",
+    var(--t-font-family-system);
   --t-font-weight-heading: 700;
   --t-font-weight-button: 700;
   --t-font-family-button: var(--t-font-family-heading);
@@ -78,10 +80,10 @@
   --t-form-title-color: var(--t-primary-branding-color);
   --t-form-label-color: #25282a;
   --t-form-help-text-color: var(--t-body-color);
-  --t-form-input-box-shadow: 0px 1px 2px rgba(16, 24, 40, 0.05);
+  --t-form-input-box-shadow: 0px 1px 2px rgba(53, 53, 53, 0.12);
   --t-form-input-border-radius: 8px;
   --t-form-input-focus-border-color: var(--t-primary-branding-color);
-  --t-form-input-focus-box-shadow: 0px 0px 0px 4px #780df21f;
+  --t-form-input-focus-box-shadow: 0px 0px 0px 4px #5a545415;
   --t-form-input-border-color: #d4d4d4;
   --t-form-placeholder-color: #a8a9ab;
   /* Box shadows */
@@ -98,7 +100,7 @@
   --t-box-shadow-3xl: 0px 32px 64px -12px rgba(16, 24, 40, 0.14);
   /* Misc */
   --t-border-color: #eee;
-  --t-light-background-color: #fcf9ff;
+  --t-light-background-color: #fafafa;
   --t-light-text-color: #686868;
   --t-light-text-hover-color: #4d4d4d;
   --t-global-card-border-radius: 16px;
@@ -169,7 +171,7 @@ body {
   font-size: 16px;
 }
 .container {
-  max-width: 1280px;
+  max-width: 1380px;
   // @media (min-width: 1470px) {
   //   max-width: 1450px;
   // }

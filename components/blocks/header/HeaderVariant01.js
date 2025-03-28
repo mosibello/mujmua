@@ -190,8 +190,8 @@ const HeaderVariant01 = ({ navigationSchema }) => {
               href="/"
             >
               <div className="b__header__variant01__logo-wrapper u__cursor-pointer">
-                <span className="b__header__variant01__logo u__font-family-heading u__f-900 u__heading-color--primary u__h3 u__letter-spacing--tight">
-                  {organization || ``}
+                <span className="b__header__variant01__logo u__font-family-heading u__f-700 u__text-branding-primary u__h3 u__letter-spacing--tight">
+                  {organization.toLowerCase() || ``}
                 </span>
               </div>
             </Link>
