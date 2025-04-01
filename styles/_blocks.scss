@@ -442,4 +442,26 @@
       }
     }
   }
+  &__profile {
+    &__header {
+      .c__user-avatar {
+        &__wrapper {
+          width: 140px;
+          height: 140px;
+          margin-left: auto;
+          margin-right: auto;
+        }
+        &__text {
+          font-size: 5.25rem;
+        }
+      }
+    }
+    &__body {
+      .c__tabular-navigation {
+        &__row {
+          justify-content: center;
+        }
+      }
+    }
+  }
 }

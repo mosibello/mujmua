@@ -645,5 +645,35 @@
       // border: 1px solid var(--t-border-color);
     }
   }
+  &__tabular-navigation {
+    &__row {
+      display: flex;
+      flex-wrap: nowrap;
+      margin-left: -12px;
+      margin-right: -12px;
+    }
+    &__col {
+      padding-left: 12px;
+      padding-right: 12px;
+    }
+    &__item {
+      a {
+        text-decoration: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 50px;
+        font-weight: 500;
+        display: block;
+        &:hover {
+          background-color: #eee;
+        }
+      }
+      &--active {
+        a {
+          background-color: var(--t-primary-branding-color) !important;
+          color: var(--t-cp-base-white) !important;
+        }
+      }
+    }
+  }
   // New component styles here
 }
