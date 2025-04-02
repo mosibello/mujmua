@@ -21,6 +21,13 @@
   width: 50%;
 }
 
+@media (min-width: 768px) {
+  .col-md-6 {
+    flex: 0 0 auto;
+    width: 50%;
+  }
+}
+
 @media (min-width: 992px) {
   .col-lg-6 {
     flex: 0 0 auto;

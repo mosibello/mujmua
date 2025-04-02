@@ -12,7 +12,7 @@ import { GET__getPhotos as GET__getPhotosCSR } from "@/services/queries-csr";
 export default async function Home() {
   const initialMediaRange = {
     start: 0,
-    end: 10,
+    end: 8,
   };
   const {
     photos: initialMedia,
@@ -22,7 +22,7 @@ export default async function Home() {
 
   return (
     <>
-      <Bounded className="b__size-lg b__hero_variant01 relative">
+      <Bounded className="b__size-xl b__hero_variant01 relative">
         <div className="c__absolute-image">
           <Image
             fill={true}
@@ -35,7 +35,7 @@ export default async function Home() {
         <Container className="relative">
           <div className="u__text-inverted">
             <div className="max-w-[700px]">
-              <Heading tag="h1" className="u__h1 mb-4">
+              <Heading tag="h1" className="u__d2 mb-4 pb-2">
                 The best free stock photos and royalty free images.
               </Heading>
               <Paragraph className="u__h5">

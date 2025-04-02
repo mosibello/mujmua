@@ -90,3 +90,15 @@ export async function GET__getUserLikeStatusForPhoto(userId, photoId) {
   }
   return { data, error };
 }
+
+export async function GET__getUserLikes(userId) {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("likes")
+    .select("*, photo(*)")
+    .eq("user", userId);
+  if (error && error.code !== "PGRST116") {
+    return { data: `User like not found`, error };
+  }
+  return { data, error };
+}

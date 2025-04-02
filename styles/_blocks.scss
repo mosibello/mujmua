@@ -9,6 +9,12 @@
     &-lg {
       padding: 6rem 0;
     }
+    &-xl {
+      padding: 6rem 0;
+      @media (min-width: 1200px) {
+        padding: 8rem 0;
+      }
+    }
     &-fit-to-screen {
       @media (min-width: 992px) {
         min-height: calc(100vh - 127px);

@@ -32,7 +32,7 @@ export default async function PhotoPage({ params }) {
   const authorId = photo?.author?.id;
   const relatedPhotosRange = {
     start: 0,
-    end: 10,
+    end: 8,
   };
 
   const relatedPhotosData = await GET__getPhotos(
