@@ -5,8 +5,7 @@ import Bounded from "@/components/wrappers/Bounded";
 import Heading from "@/components/ui/Heading";
 import UserAvatar from "@/components/ui/UserAvatar";
 import Button from "@/components/ui/Button";
-import Link from "next/link";
-import { rootURL } from "@/lib/constants";
+import ProfileNavigation from "@/components/templates/profile/ProfileNavigation";
 import GalleryGridWrapper from "@/components/ui/GalleryGridWrapper";
 import { GET__getPhotos } from "@/services/queries-ssr";
 import { GET__getPhotos as GET__getPhotosCSR } from "@/services/queries-csr";
@@ -48,7 +47,10 @@ export default async function ProfilePageLayout({ params, children }) {
           </div>
         </Container>
       </Bounded>
-      <Bounded className="pb-[4rem] b__profile__body">{children}</Bounded>
+      <Bounded className="pb-[4rem] b__profile__body">
+        <ProfileNavigation profile={profile} />
+        <Container className="mt-[2.75rem]">{children}</Container>
+      </Bounded>
     </>
   );
 }

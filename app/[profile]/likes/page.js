@@ -33,29 +33,7 @@ export default async function ProfilePage__Likes({ params }) {
 
   return (
     <>
-      <>
-        <Container>
-          <div className="c__tabular-navigation">
-            <div className="c__tabular-navigation__row">
-              <div className="c__tabular-navigation__col">
-                <div className="c__tabular-navigation__item">
-                  <Link className="u__h6" href={`${rootURL}/@${profile}/`}>
-                    Gallery
-                  </Link>
-                </div>
-              </div>
-              <div className="c__tabular-navigation__col">
-                <div className="c__tabular-navigation__item c__tabular-navigation__item--active">
-                  <Link className="u__h6" href={`${rootURL}/@${profile}/likes`}>
-                    Likes
-                  </Link>
-                </div>
-              </div>
-            </div>
-          </div>
-        </Container>
-        <Container className="mt-[2.75rem]">
-          {/* {initialMedia && (
+      {/* {initialMedia && (
             <GalleryGridWrapper
               fetchNext={GET__getPhotosCSR}
               fetchNextParams={fetchNextParams}
@@ -64,8 +42,6 @@ export default async function ProfilePage__Likes({ params }) {
               totalCount={totalCount}
             />
           )} */}
-        </Container>
-      </>
     </>
   );
 }
