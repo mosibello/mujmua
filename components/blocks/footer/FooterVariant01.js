@@ -10,7 +10,7 @@ const Footer = () => {
           <Container className="text-center">
             <p className="mb-0" style={{ fontSize: `0.85rem` }}>
               © Copyright{" "}
-              <a href="http://localhost:3000/" className="">
+              <a href="/" className="">
                 {organization || ``}
               </a>{" "}
               {new Date().getFullYear()}
