@@ -8,8 +8,8 @@ import Button from "@/components/ui/Button";
 import Link from "next/link";
 import { rootURL } from "@/lib/constants";
 import GalleryGridWrapper from "@/components/ui/GalleryGridWrapper";
-import { GET__getUserLikes } from "@/services/queries-ssr";
-import { GET__getPhotos as GET__getPhotosCSR } from "@/services/queries-csr";
+import { GET__getLibraryLikes } from "@/services/queries-ssr";
+import { GET__getLibraryLikes as GET__getLibraryLikesCSR } from "@/services/queries-csr";
 
 export default async function ProfilePage__Likes({ params }) {
   params = await params;
@@ -25,23 +25,33 @@ export default async function ProfilePage__Likes({ params }) {
   }
 
   const userId = data?.profile?.id;
-  console.log(userId);
 
-  const userLikesData = await GET__getUserLikes(userId);
+  const initialMediaRange = {
+    start: 0,
+    end: 8,
+  };
 
-  console.log(userLikesData);
+  const {
+    photos: initialMedia,
+    count: totalCount,
+    error,
+  } = await GET__getLibraryLikes(0, 8, userId);
+
+  console.log(initialMedia);
+
+  const fetchNextParams = [userId];
 
   return (
     <>
-      {/* {initialMedia && (
-            <GalleryGridWrapper
-              fetchNext={GET__getPhotosCSR}
-              fetchNextParams={fetchNextParams}
-              initialMedia={initialMedia}
-              initialMediaRange={initialMediaRange}
-              totalCount={totalCount}
-            />
-          )} */}
+      {initialMedia && (
+        <GalleryGridWrapper
+          fetchNext={GET__getLibraryLikesCSR}
+          fetchNextParams={fetchNextParams}
+          initialMedia={initialMedia}
+          initialMediaRange={initialMediaRange}
+          totalCount={totalCount}
+        />
+      )}
     </>
   );
 }

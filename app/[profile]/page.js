@@ -46,6 +46,7 @@ export default async function ProfilePage__Gallery({ params }) {
     filters
   );
 
+  console.log(initialMedia);
   const fetchNextParams = [filters];
 
   return (

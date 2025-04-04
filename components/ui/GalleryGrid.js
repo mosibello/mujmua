@@ -119,7 +119,13 @@ const SimpleImageCard = ({ index, data: elem }) => {
               >
                 <div className="c__simple-image-card__avatar-row">
                   <div className="c__simple-image-card__avatar-row__col">
-                    <UserAvatar initials={elem?.author?.first_name[0]} />
+                    <UserAvatar
+                      initials={
+                        elem?.author?.first_name
+                          ? elem?.author?.first_name[0]
+                          : "U"
+                      }
+                    />
                   </div>
                   <div className="c__simple-image-card__avatar-row__col">
                     <span className="text-white u__p u__f-700 truncate">

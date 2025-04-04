@@ -18,7 +18,7 @@ export async function GET__getProfileByHandle(handle) {
 
 export async function GET__getPhotos(
   rangeStart = 0,
-  rangeEnd = 7,
+  rangeEnd = 8,
   filters = {},
   order,
   excludePhotoId = null,
@@ -91,14 +91,25 @@ export async function GET__getUserLikeStatusForPhoto(userId, photoId) {
   return { data, error };
 }
 
-export async function GET__getUserLikes(userId) {
+export async function GET__getLibraryLikes(
+  rangeStart = 0,
+  rangeEnd = 8,
+  userId,
+  order
+) {
   const supabase = await createClient();
-  const { data, error } = await supabase
+  let query = supabase
     .from("likes")
-    .select("*, photo(*)")
-    .eq("user", userId);
-  if (error && error.code !== "PGRST116") {
-    return { data: `User like not found`, error };
-  }
-  return { data, error };
+    .select("*, photo(*, author(*))", { count: "exact" })
+    .eq("user", userId)
+    .range(rangeStart, rangeEnd);
+
+  query = query.order(order?.column || "created_at", {
+    ascending: order?.ascending ?? false,
+  });
+
+  let { data: photos, count, error } = await query;
+  photos = photos.map((elem) => elem.photo);
+
+  return { photos, count, error };
 }
