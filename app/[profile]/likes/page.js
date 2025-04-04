@@ -1,15 +1,11 @@
 import { notFound } from "next/navigation";
 import { GET__getProfileByHandle } from "@/services/queries-ssr";
-import Container from "@/components/wrappers/Container";
-import Bounded from "@/components/wrappers/Bounded";
-import Heading from "@/components/ui/Heading";
-import UserAvatar from "@/components/ui/UserAvatar";
-import Button from "@/components/ui/Button";
-import Link from "next/link";
-import { rootURL } from "@/lib/constants";
 import GalleryGridWrapper from "@/components/ui/GalleryGridWrapper";
 import { GET__getLibraryLikes } from "@/services/queries-ssr";
 import { GET__getLibraryLikes as GET__getLibraryLikesCSR } from "@/services/queries-csr";
+
+import { Alert, AlertDescription } from "@/components/ui/shadcn/alert";
+import Paragraph from "@/components/ui/Paragraph";
 
 export default async function ProfilePage__Likes({ params }) {
   params = await params;
@@ -24,7 +20,7 @@ export default async function ProfilePage__Likes({ params }) {
     return notFound();
   }
 
-  const userId = data?.profile?.id;
+  const profileId = data?.profile?.id;
 
   const initialMediaRange = {
     start: 0,
@@ -35,15 +31,13 @@ export default async function ProfilePage__Likes({ params }) {
     photos: initialMedia,
     count: totalCount,
     error,
-  } = await GET__getLibraryLikes(0, 8, userId);
+  } = await GET__getLibraryLikes(0, 8, profileId);
 
-  console.log(initialMedia);
-
-  const fetchNextParams = [userId];
+  const fetchNextParams = [profileId];
 
   return (
     <>
-      {initialMedia && (
+      {initialMedia && initialMedia.length ? (
         <GalleryGridWrapper
           fetchNext={GET__getLibraryLikesCSR}
           fetchNextParams={fetchNextParams}
@@ -51,6 +45,17 @@ export default async function ProfilePage__Likes({ params }) {
           initialMediaRange={initialMediaRange}
           totalCount={totalCount}
         />
+      ) : (
+        <div className="max-w-[600px] ml-auto mr-auto text-center mt-[2rem] h-[400px]">
+          <Alert>
+            <AlertDescription>
+              <Paragraph disableParse className="u__subtitle !mb-[0]">
+                {data?.profile?.first_name} {data?.profile?.last_name} hasn't
+                liked anything yet.
+              </Paragraph>
+            </AlertDescription>
+          </Alert>
+        </div>
       )}
     </>
   );

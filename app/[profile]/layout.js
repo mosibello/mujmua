@@ -7,7 +7,7 @@ import UserAvatar from "@/components/ui/UserAvatar";
 import Button from "@/components/ui/Button";
 import ProfileNavigation from "@/components/templates/profile/ProfileNavigation";
 import GalleryGridWrapper from "@/components/ui/GalleryGridWrapper";
-import { GET__getPhotos } from "@/services/queries-ssr";
+import { GET__getPhotos, GET__getUser } from "@/services/queries-ssr";
 import { GET__getPhotos as GET__getPhotosCSR } from "@/services/queries-csr";
 
 export default async function ProfilePageLayout({ params, children }) {
@@ -23,27 +23,41 @@ export default async function ProfilePageLayout({ params, children }) {
     return notFound();
   }
 
+  const profileId = data?.profile?.id;
+
+  const { data: userData, error: userError } = await GET__getUser();
+  const userId = userData?.user?.id;
+
   return (
     <>
-      <Bounded className="b__size-md b__profile__header">
+      <Bounded
+        data-profile-id={profileId}
+        className="b__size-md b__profile__header"
+      >
         <Container>
           <div className="mx-auto text-center max-w-[700px]">
             <div className="mb-[1.5rem]">
               <UserAvatar initials={data?.profile?.first_name[0]} />
             </div>
-            <div className="mb-[1.5rem]">
+            <div
+              className={`${
+                userId !== profileId ? `mb-[1.5rem]` : `mb-[0rem]`
+              }`}
+            >
               <Heading tag="h1" className="u__h1">
                 {data?.profile?.first_name} {data?.profile?.last_name}
               </Heading>
             </div>
-            <div>
-              <Button
-                title={`Follow`}
-                theme={`secondary`}
-                className={``}
-                destination={`#`}
-              />
-            </div>
+            {userId !== profileId && (
+              <div>
+                <Button
+                  title={`Follow`}
+                  theme={`secondary`}
+                  className={``}
+                  destination={`#`}
+                />
+              </div>
+            )}
           </div>
         </Container>
       </Bounded>

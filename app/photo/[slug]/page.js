@@ -49,7 +49,7 @@ export default async function PhotoPage({ params }) {
     error: relatedPhotosError,
   } = relatedPhotosData;
 
-  console.log(relatedPhotosData);
+  // console.log(relatedPhotosData);
 
   const pageData = {
     photo,

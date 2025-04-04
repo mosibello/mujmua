@@ -24,8 +24,7 @@ export default async function ProfilePage__Gallery({ params }) {
     return notFound();
   }
 
-  const authorId = data?.profile?.id;
-  console.log(authorId);
+  const profileId = data?.profile?.id;
 
   const initialMediaRange = {
     start: 0,
@@ -33,7 +32,7 @@ export default async function ProfilePage__Gallery({ params }) {
   };
 
   const filters = {
-    author: ["eq", authorId],
+    author: ["eq", profileId],
   };
 
   const {
@@ -46,7 +45,6 @@ export default async function ProfilePage__Gallery({ params }) {
     filters
   );
 
-  console.log(initialMedia);
   const fetchNextParams = [filters];
 
   return (

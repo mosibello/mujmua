@@ -157,7 +157,7 @@ const HeaderVariant01 = ({ navigationSchema }) => {
   useEffect(() => {
     setMenuOpen(false);
     setNavigationState(navigationSchema?.items);
-    window.scrollTo(0, 0);
+    // window.scrollTo(0, 0);
   }, [pathname]);
 
   useEffect(() => {

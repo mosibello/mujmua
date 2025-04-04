@@ -8,7 +8,6 @@ import { rootURL } from "@/lib/constants";
 
 const ProfileNavigation = ({ profile }) => {
   const pathname = usePathname();
-  console.log(pathname);
   return (
     <Container>
       <div className="c__tabular-navigation">
@@ -21,7 +20,11 @@ const ProfileNavigation = ({ profile }) => {
                   : ""
               }`}
             >
-              <Link className="u__h6" href={`${rootURL}/@${profile}`}>
+              <Link
+                // scroll={false}
+                className="u__h6"
+                href={`${rootURL}/@${profile}`}
+              >
                 Gallery
               </Link>
             </div>
@@ -34,7 +37,11 @@ const ProfileNavigation = ({ profile }) => {
                   : ""
               }`}
             >
-              <Link className="u__h6" href={`${rootURL}/@${profile}/likes`}>
+              <Link
+                // scroll={false}
+                className="u__h6"
+                href={`${rootURL}/@${profile}/likes`}
+              >
                 Likes
               </Link>
             </div>
