@@ -12,7 +12,7 @@ import { GET__getPhotos as GET__getPhotosCSR } from "@/services/queries-csr";
 export default async function Home() {
   const initialMediaRange = {
     start: 0,
-    end: 8,
+    end: 11,
   };
   const {
     photos: initialMedia,

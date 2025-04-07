@@ -99,7 +99,7 @@ export const SimpleImageCard = ({ index, data: elem, loading }) => {
       >
         {loading && (
           <>
-            <Skeleton className="w-full h-auto rounded-lg c__simple-image-card__image" />
+            <Skeleton className="w-full h-auto rounded-lg c__simple-image-card__image c__simple-image-card__image--skeleton" />
           </>
         )}
         {!loading && (

@@ -60,7 +60,7 @@ export async function GET__getPhotos(
 
 export async function GET__getLibraryLikes(
   rangeStart = 0,
-  rangeEnd = 8,
+  rangeEnd = 11,
   userId,
   order
 ) {

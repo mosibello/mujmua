@@ -1,8 +1,9 @@
 "use client";
 import React, { useState } from "react";
 import GalleryGrid from "@/components/ui/GalleryGrid";
-// import { GET__getPhotos } from "@/services/queries-csr";
+import { default as GalleryGridLoader } from "@/components/loaders/GalleryGrid";
 import InfiniteScroll from "react-infinite-scroll-component";
+import Container from "@/components/wrappers/Container";
 import Spinner from "@/components/ui/Spinner";
 
 const GalleryGridWrapper = ({
@@ -61,7 +62,10 @@ const GalleryGridWrapper = ({
       hasMore={hasMore}
       loader={
         <div className="">
-          <Spinner />
+          {/* <Spinner /> */}
+          <Container className="w-full mt-[1.5rem]">
+            <GalleryGridLoader count={3} />
+          </Container>
         </div>
       }
       scrollThreshold={0.8}

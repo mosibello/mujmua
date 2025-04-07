@@ -24,7 +24,7 @@ export default async function ProfilePage__Likes({ params }) {
 
   const initialMediaRange = {
     start: 0,
-    end: 8,
+    end: 11,
   };
 
   const {

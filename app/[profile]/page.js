@@ -28,7 +28,7 @@ export default async function ProfilePage__Gallery({ params }) {
 
   const initialMediaRange = {
     start: 0,
-    end: 8,
+    end: 11,
   };
 
   const filters = {

@@ -18,7 +18,7 @@ export async function GET__getProfileByHandle(handle) {
 
 export async function GET__getPhotos(
   rangeStart = 0,
-  rangeEnd = 8,
+  rangeEnd = 11,
   filters = {},
   order,
   excludePhotoId = null,
@@ -93,7 +93,7 @@ export async function GET__getUserLikeStatusForPhoto(userId, photoId) {
 
 export async function GET__getLibraryLikes(
   rangeStart = 0,
-  rangeEnd = 8,
+  rangeEnd = 11,
   userId,
   order
 ) {

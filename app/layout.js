@@ -24,12 +24,12 @@ export default async function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={`${pacaembu.variable}`}>
-        {/* <NextTopLoader
+        <NextTopLoader
           color="var(--t-primary-branding-color)"
           showSpinner={false}
           height={2}
           zIndex={999999}
-        /> */}
+        />
         <AppWrapper user={user}>
           <Layout>{children}</Layout>
         </AppWrapper>

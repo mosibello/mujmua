@@ -637,6 +637,11 @@
       @media (min-width: 992px) {
         height: 375px;
       }
+      &--skeleton {
+        @media (max-width: 768px) {
+          height: 300px;
+        }
+      }
     }
     &__content-wrapper {
       .row {
